@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BridgeLogix — логистика Шымкент ↔ Узбекистан</title>
+  <meta name="description" content="Рассчитайте стоимость, срок и риски перевозки между Шымкентом и Узбекистаном, получите чек-лист документов и ведите поставки в одном месте.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+/* =====================================================================
+   BridgeLogix — стили (светлая и тёмная темы, адаптивно)
+   ===================================================================== */
+:root {
+  --bg: #f4f6ff; --card: #ffffff; --card2: #f6f7ff; --text: #161a3d; --muted: #666f92; --line: #e2e5f6;
+  --p: #5b5cf0; --p2: #9b5cf6; --cy: #06b6d4; --ok: #10b981; --warn: #f59e0b; --bad: #ef4444; --pink: #ec4899;
+  --grad: linear-gradient(135deg, #5b5cf0 0%, #9b5cf6 55%, #ec4899 100%);
+  --grad2: linear-gradient(135deg, #06b6d4, #5b5cf0);
+  --shadow: 0 10px 30px rgba(60, 70, 160, .12);
+  --r: 18px;
+}
+[data-theme="dark"] {
+  --bg: #0a0d22; --card: #141a3d; --card2: #1a2152; --text: #eef0ff; --muted: #a2aad6; --line: #28306a;
+  --shadow: 0 10px 30px rgba(0, 0, 0, .45);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; font-family: 'Manrope', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg); color: var(--text); line-height: 1.5; min-height: 100vh;
+}
+body::before {
+  content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(600px 400px at 8% -5%, rgba(91, 92, 240, .22), transparent 70%),
+    radial-gradient(500px 420px at 100% 10%, rgba(236, 72, 153, .16), transparent 70%),
+    radial-gradient(520px 420px at 60% 100%, rgba(6, 182, 212, .16), transparent 70%);
+}
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+h1, h2, h3 { line-height: 1.2; margin: 0; }
+
+/* ---------- шапка ---------- */
+.top {
+  position: sticky; top: 0; z-index: 50; display: flex; align-items: center; gap: 14px;
+  padding: 10px 20px; backdrop-filter: blur(14px);
+  background: color-mix(in srgb, var(--bg) 78%, transparent); border-bottom: 1px solid var(--line);
+}
+.brand { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--text); font-size: 1.2rem; white-space: nowrap; }
+.brand b span { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.logo { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 12px; background: var(--grad); box-shadow: 0 6px 16px rgba(91, 92, 240, .4); }
+.nav { display: flex; gap: 6px; overflow-x: auto; flex: 1; scrollbar-width: none; padding: 2px; }
+.nav::-webkit-scrollbar { display: none; }
+.nav button {
+  border: 0; background: transparent; padding: 8px 14px; border-radius: 999px; white-space: nowrap;
+  font-weight: 600; color: var(--muted); transition: .2s;
+}
+.nav button:hover { background: var(--card2); color: var(--text); }
+.nav button.on { background: var(--grad); color: #fff; box-shadow: 0 6px 16px rgba(91, 92, 240, .35); }
+.tools { display: flex; gap: 8px; }
+.icon { width: 38px; height: 38px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); font-weight: 800; box-shadow: var(--shadow); }
+.icon:hover { transform: translateY(-1px); }
+
+/* ---------- hero ---------- */
+.hero {
+  max-width: 1200px; margin: 22px auto 10px; padding: 34px; border-radius: 28px; color: #fff;
+  background: var(--grad); background-size: 200% 200%; animation: shift 12s ease infinite;
+  display: grid; grid-template-columns: 1.2fr .8fr; gap: 20px; align-items: center;
+  box-shadow: 0 24px 50px rgba(91, 92, 240, .35); position: relative; overflow: hidden;
+}
+.hero::after { content: ''; position: absolute; width: 380px; height: 380px; right: -120px; top: -140px; border-radius: 50%; background: rgba(255, 255, 255, .12); }
+@keyframes shift { 0%, 100% { background-position: 0 50%; } 50% { background-position: 100% 50%; } }
+.badge { display: inline-block; padding: 6px 14px; border-radius: 999px; background: rgba(255, 255, 255, .2); font-weight: 700; font-size: .85rem; }
+.hero h1 { font-size: clamp(1.7rem, 4vw, 2.7rem); margin: 14px 0 10px; font-weight: 800; }
+.hero h1 em { font-style: normal; background: rgba(255, 255, 255, .22); padding: 0 10px; border-radius: 12px; }
+.hero p { margin: 0 0 18px; max-width: 560px; opacity: .93; }
+.hero-cta { display: flex; gap: 10px; flex-wrap: wrap; }
+.hero-stats { display: flex; gap: 24px; margin-top: 24px; flex-wrap: wrap; }
+.hero-stats div { display: flex; flex-direction: column; }
+.hero-stats b { font-size: 1.8rem; font-weight: 800; }
+.hero-stats span { font-size: .8rem; opacity: .85; }
+.hero-art { position: relative; z-index: 1; }
+.hero-art svg { width: 100%; height: auto; }
+.svgt { fill: #fff; font-weight: 700; font-size: 14px; }
+
+/* ---------- кнопки ---------- */
+.btn { border: 0; border-radius: 14px; padding: 12px 20px; font-weight: 700; transition: .2s; }
+.btn.primary { background: #fff; color: var(--p); box-shadow: 0 8px 20px rgba(0, 0, 0, .18); }
+.btn.ghost { background: rgba(255, 255, 255, .18); color: #fff; border: 1px solid rgba(255, 255, 255, .4); }
+.btn:hover { transform: translateY(-2px); }
+.btn.solid { background: var(--grad); color: #fff; box-shadow: 0 8px 20px rgba(91, 92, 240, .35); }
+.btn.line { background: var(--card); color: var(--text); border: 1px solid var(--line); }
+.btn.danger { background: #fee2e2; color: #b91c1c; }
+[data-theme="dark"] .btn.danger { background: #4b1d29; color: #fca5a5; }
+.btn.sm { padding: 7px 12px; border-radius: 10px; font-size: .85rem; }
+
+/* ---------- макет ---------- */
+main { max-width: 1200px; margin: 0 auto; padding: 14px 18px 40px; }
+.tab { display: none; animation: fade .35s ease; }
+.tab.on { display: block; }
+@keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.grid-calc { display: grid; grid-template-columns: 400px 1fr; gap: 18px; align-items: start; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 20px; box-shadow: var(--shadow); }
+.card h2 { font-size: 1.25rem; margin-bottom: 6px; }
+.card h3 { font-size: 1.05rem; margin-bottom: 10px; }
+.form { position: sticky; top: 76px; max-height: calc(100vh - 92px); overflow-y: auto; scrollbar-width: thin; }
+
+/* ---------- поля ---------- */
+.lbl { display: block; margin: 14px 0 6px; font-size: .8rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+input[type=number], input[type=text], input[type=date], select, textarea {
+  width: 100%; padding: 11px 13px; border-radius: 12px; border: 1.5px solid var(--line); background: var(--card2); outline: none; transition: .2s;
+}
+input:focus, select:focus, textarea:focus { border-color: var(--p); box-shadow: 0 0 0 4px rgba(91, 92, 240, .15); }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.seg { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; background: var(--card2); padding: 5px; border-radius: 14px; }
+.seg button, .fseg button { border: 0; background: transparent; padding: 10px 6px; border-radius: 10px; font-weight: 700; color: var(--muted); font-size: .88rem; }
+.seg button.on { background: var(--grad); color: #fff; box-shadow: 0 6px 14px rgba(91, 92, 240, .3); }
+.chips { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.chip { display: flex; align-items: center; gap: 8px; padding: 9px 11px; border-radius: 12px; border: 1.5px solid var(--line); background: var(--card2); font-weight: 600; font-size: .88rem; text-align: left; transition: .2s; }
+.chip:hover { border-color: var(--p); }
+.chip.on { border-color: var(--p); background: color-mix(in srgb, var(--p) 14%, var(--card)); box-shadow: 0 0 0 3px rgba(91, 92, 240, .12); }
+.chip .e { font-size: 1.2rem; }
+.presets { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.presets button { border: 1px dashed var(--line); background: transparent; border-radius: 999px; padding: 4px 11px; font-size: .78rem; color: var(--muted); }
+.presets button:hover { border-color: var(--p); color: var(--p); }
+
+.modes { display: grid; gap: 8px; }
+.mode { display: grid; grid-template-columns: 34px 1fr auto; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 14px; border: 1.5px solid var(--line); background: var(--card2); text-align: left; transition: .2s; }
+.mode:hover { border-color: var(--p); transform: translateX(2px); }
+.mode.on { border-color: var(--p); background: color-mix(in srgb, var(--p) 12%, var(--card)); box-shadow: 0 0 0 3px rgba(91, 92, 240, .12); }
+.mode .me { font-size: 1.5rem; }
+.mode b { display: block; font-size: .92rem; }
+.mode small { color: var(--muted); font-size: .75rem; }
+.mode .mp { text-align: right; font-weight: 800; font-size: .85rem; white-space: nowrap; }
+.mode .mp small { display: block; font-weight: 600; }
+.mode.bad { opacity: .6; }
+.mode .star { color: var(--warn); }
+
+.switches { display: grid; gap: 6px; }
+.sw { display: grid; grid-template-columns: 26px 1fr 44px; gap: 8px; align-items: center; padding: 8px 10px; border-radius: 12px; background: var(--card2); cursor: pointer; }
+.sw b { font-size: .88rem; display: block; }
+.sw small { color: var(--muted); font-size: .74rem; }
+.sw input { display: none; }
+.sw .tg { width: 44px; height: 24px; border-radius: 99px; background: var(--line); position: relative; transition: .2s; }
+.sw .tg::after { content: ''; position: absolute; width: 18px; height: 18px; border-radius: 50%; background: #fff; top: 3px; left: 3px; transition: .2s; box-shadow: 0 2px 4px rgba(0, 0, 0, .25); }
+.sw input:checked ~ .tg { background: var(--ok); }
+.sw input:checked ~ .tg::after { left: 23px; }
+
+/* ---------- результаты ---------- */
+#results { display: grid; gap: 18px; min-width: 0; }
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.kpi { border-radius: var(--r); padding: 16px; color: #fff; position: relative; overflow: hidden; box-shadow: var(--shadow); animation: pop .35s ease; }
+@keyframes pop { from { transform: scale(.96); opacity: .6; } to { transform: none; opacity: 1; } }
+.kpi::after { content: ''; position: absolute; right: -20px; bottom: -30px; width: 90px; height: 90px; border-radius: 50%; background: rgba(255, 255, 255, .15); }
+.kpi.k1 { background: linear-gradient(135deg, #5b5cf0, #9b5cf6); }
+.kpi.k2 { background: linear-gradient(135deg, #06b6d4, #3b82f6); }
+.kpi.k3 { background: linear-gradient(135deg, #f59e0b, #ef4444); }
+.kpi.k4 { background: linear-gradient(135deg, #10b981, #06b6d4); }
+.kpi small { display: block; opacity: .9; font-weight: 600; font-size: .78rem; }
+.kpi b { display: block; font-size: 1.5rem; font-weight: 800; margin: 2px 0; letter-spacing: -.02em; }
+.kpi span { font-size: .78rem; opacity: .92; }
+
+.split { display: grid; grid-template-columns: 1.4fr 1fr; gap: 18px; }
+.timeline { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 0; }
+.stage { display: grid; grid-template-columns: 46px 1fr; gap: 12px; position: relative; padding-bottom: 16px; }
+.stage:not(:last-child)::before { content: ''; position: absolute; left: 22px; top: 46px; bottom: 0; width: 2px; background: linear-gradient(var(--c), var(--line)); }
+.stage .dot { width: 46px; height: 46px; border-radius: 15px; display: grid; place-items: center; font-size: 1.4rem; background: color-mix(in srgb, var(--c) 18%, var(--card)); border: 2px solid var(--c); }
+.stage-head { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; align-items: center; }
+.pill { font-size: .72rem; font-weight: 700; padding: 3px 9px; border-radius: 99px; background: var(--card2); color: var(--muted); }
+.stage-meta { display: flex; flex-wrap: wrap; gap: 12px; font-size: .85rem; margin: 4px 0 6px; font-weight: 600; }
+.risk.lo { color: var(--ok); } .risk.mid { color: var(--warn); } .risk.hi { color: var(--bad); }
+.gantt { height: 9px; border-radius: 99px; background: var(--card2); position: relative; overflow: hidden; }
+.gantt i { position: absolute; top: 0; bottom: 0; border-radius: 99px; background: var(--c); }
+.stage details { margin-top: 6px; font-size: .85rem; }
+.stage summary { cursor: pointer; color: var(--p); font-weight: 700; }
+.stage ul { margin: 6px 0 0; padding-left: 18px; color: var(--muted); }
+
+.donut-wrap { display: grid; place-items: center; gap: 12px; }
+.donut { width: 190px; height: 190px; }
+.legend { width: 100%; display: grid; gap: 6px; font-size: .84rem; }
+.legend div { display: flex; align-items: center; gap: 8px; }
+.legend i { width: 11px; height: 11px; border-radius: 4px; flex: none; }
+.legend span { flex: 1; }
+.legend b { white-space: nowrap; }
+.totals { margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--line); display: grid; gap: 4px; font-size: .9rem; }
+.totals div { display: flex; justify-content: space-between; }
+.totals .big { font-weight: 800; font-size: 1.05rem; }
+
+.advice { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; }
+.adv { display: grid; grid-template-columns: 38px 1fr; gap: 10px; padding: 12px; border-radius: 14px; background: var(--card2); border-left: 4px solid var(--p); }
+.adv.warn { border-color: var(--warn); } .adv.tip { border-color: var(--ok); } .adv.info { border-color: var(--cy); }
+.adv .ai { font-size: 1.5rem; }
+.adv b { display: block; font-size: .92rem; }
+.adv p { margin: 2px 0 0; font-size: .84rem; color: var(--muted); }
+
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.src { font-size: .78rem; color: var(--muted); margin-top: 10px; }
+
+/* ---------- сравнение ---------- */
+.head-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.head-row h2 { font-size: 1.4rem; }
+.head-row p { margin: 2px 0 0; color: var(--muted); font-size: .9rem; }
+.fseg { display: flex; gap: 6px; background: var(--card2); padding: 5px; border-radius: 14px; flex-wrap: wrap; }
+.fseg button.on { background: var(--grad); color: #fff; }
+.cmp { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; }
+.cmp-card { position: relative; padding: 18px; border-radius: var(--r); background: var(--card); border: 2px solid var(--line); box-shadow: var(--shadow); display: grid; gap: 6px; }
+.cmp-card.rec { border-color: var(--p); box-shadow: 0 14px 34px rgba(91, 92, 240, .28); transform: translateY(-4px); }
+.cmp-card.na { opacity: .62; }
+.cmp-card .ce { font-size: 2rem; }
+.cmp-card h3 { margin: 0; }
+.cmp-card .price { font-size: 1.35rem; font-weight: 800; }
+.cmp-card .row { display: flex; justify-content: space-between; font-size: .85rem; color: var(--muted); }
+.cmp-card .row b { color: var(--text); }
+.tags { display: flex; flex-wrap: wrap; gap: 5px; min-height: 22px; }
+.tag { font-size: .7rem; font-weight: 700; padding: 3px 8px; border-radius: 99px; background: color-mix(in srgb, var(--p) 16%, var(--card)); color: var(--p); }
+.ribbon { position: absolute; top: -12px; right: 14px; background: var(--grad); color: #fff; font-size: .75rem; font-weight: 800; padding: 4px 12px; border-radius: 99px; box-shadow: 0 6px 14px rgba(91, 92, 240, .4); }
+.warn-note { font-size: .78rem; color: var(--bad); }
+.charts2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px; }
+.hb { display: grid; grid-template-columns: 84px 1fr 96px; gap: 10px; align-items: center; margin: 9px 0; font-size: .85rem; }
+.hb-t { height: 16px; background: var(--card2); border-radius: 99px; overflow: hidden; }
+.hb-t i { display: block; height: 100%; border-radius: 99px; transition: width .5s; }
+.hb-v { text-align: right; font-weight: 700; white-space: nowrap; }
+
+/* ---------- документы ---------- */
+.docs-top { display: grid; grid-template-columns: 170px 1fr; gap: 20px; align-items: center; }
+.ring { width: 150px; height: 150px; }
+.ring text { font-weight: 800; fill: var(--text); }
+.doc-list { display: grid; gap: 8px; margin-top: 14px; }
+.doc { display: grid; grid-template-columns: 28px 1fr; gap: 12px; align-items: start; padding: 12px 14px; border-radius: 14px; background: var(--card2); border: 1.5px solid transparent; cursor: pointer; transition: .2s; }
+.doc:hover { border-color: var(--p); }
+.doc input { display: none; }
+.doc .ck { width: 26px; height: 26px; border-radius: 9px; border: 2px solid var(--line); display: grid; place-items: center; background: var(--card); }
+.doc input:checked + .ck { background: var(--ok); border-color: var(--ok); }
+.doc input:checked + .ck::after { content: '✓'; color: #fff; font-weight: 800; }
+.doc.done b { text-decoration: line-through; color: var(--muted); }
+.doc small { display: block; color: var(--muted); font-size: .78rem; }
+.doc p { margin: 4px 0 0; font-size: .82rem; color: var(--muted); }
+
+/* ---------- трекер ---------- */
+.ships { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 14px; margin-top: 14px; }
+.ship { display: grid; gap: 8px; }
+.ship.problem { border-color: var(--bad); box-shadow: 0 10px 30px rgba(239, 68, 68, .2); }
+.ship h3 { margin: 0; font-size: 1rem; }
+.ship .sub { color: var(--muted); font-size: .8rem; }
+.stepper { display: flex; gap: 4px; }
+.stepper button { flex: 1; border: 0; border-radius: 10px; padding: 7px 0; background: var(--card2); font-size: 1rem; opacity: .55; transition: .2s; }
+.stepper button.done { background: color-mix(in srgb, var(--ok) 24%, var(--card)); opacity: 1; }
+.stepper button.cur { background: var(--grad); box-shadow: 0 4px 10px rgba(91, 92, 240, .4); opacity: 1; }
+.nums { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: .82rem; }
+.nums div { background: var(--card2); border-radius: 10px; padding: 8px 10px; }
+.nums small { display: block; color: var(--muted); }
+.over { color: var(--bad); font-weight: 800; } .under { color: var(--ok); font-weight: 800; }
+.note { font-size: .8rem; color: var(--muted); background: var(--card2); border-radius: 10px; padding: 7px 10px; }
+.ship-actions { display: flex; gap: 6px; justify-content: flex-end; }
+.empty { text-align: center; padding: 40px 10px; color: var(--muted); }
+.empty .big { font-size: 3rem; }
+
+dialog { border: 0; border-radius: 22px; padding: 0; width: min(640px, 94vw); background: var(--card); color: var(--text); box-shadow: 0 30px 80px rgba(0, 0, 0, .45); }
+dialog::backdrop { background: rgba(10, 13, 34, .6); backdrop-filter: blur(4px); }
+.dlg { padding: 22px; max-height: 88vh; overflow-y: auto; }
+.dlg .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
+.dlg .full { grid-column: 1 / -1; }
+.dlg-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
+.check { display: flex; align-items: center; gap: 8px; margin-top: 14px; font-weight: 600; }
+.check input { width: 18px; height: 18px; }
+
+/* ---------- аналитика ---------- */
+.kpis3 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px; }
+.stat { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; box-shadow: var(--shadow); }
+.stat small { color: var(--muted); font-weight: 600; }
+.stat b { display: block; font-size: 1.6rem; font-weight: 800; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.insight { margin-top: 18px; padding: 16px 18px; border-radius: var(--r); background: linear-gradient(135deg, rgba(91, 92, 240, .14), rgba(236, 72, 153, .12)); border: 1px solid var(--line); }
+.pf { display: grid; grid-template-columns: 1fr; gap: 3px; margin: 11px 0; font-size: .82rem; }
+.pf-b { display: grid; gap: 3px; }
+.pf-b i { display: block; height: 9px; border-radius: 99px; }
+.pf-b .plan { background: #94a3b8; } .pf-b .fact { background: var(--p); }
+.pf-b .fact.over { background: var(--bad); }
+.lg { display: flex; gap: 14px; font-size: .78rem; color: var(--muted); margin-top: 6px; }
+.lg i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; }
+
+/* ---------- тарифы ---------- */
+.tgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; margin-top: 14px; }
+.fld { display: grid; gap: 4px; margin: 10px 0; font-size: .85rem; font-weight: 600; }
+.fld div { display: flex; align-items: center; gap: 8px; }
+.fld em { font-style: normal; color: var(--muted); font-size: .78rem; min-width: 56px; }
+
+.faq details { border-bottom: 1px solid var(--line); padding: 10px 0; }
+.faq summary { font-weight: 700; cursor: pointer; }
+.faq p { color: var(--muted); margin: 6px 0 0; font-size: .9rem; }
+
+/* ---------- прочее ---------- */
+#toast { position: fixed; left: 50%; bottom: 26px; transform: translate(-50%, 30px); background: var(--text); color: var(--bg); padding: 11px 20px; border-radius: 14px; font-weight: 700; opacity: 0; pointer-events: none; transition: .3s; z-index: 100; box-shadow: var(--shadow); }
+#toast.show { opacity: 1; transform: translate(-50%, 0); }
+footer { text-align: center; padding: 20px 18px 40px; color: var(--muted); font-size: .82rem; max-width: 800px; margin: 0 auto; }
+.faq { margin-top: 18px; }
+
+/* ---------- адаптив ---------- */
+@media (max-width: 1020px) {
+  .grid-calc { grid-template-columns: 1fr; }
+  .form { position: static; max-height: none; }
+  .hero { grid-template-columns: 1fr; padding: 24px; }
+  .hero-art { display: none; }
+  .kpis, .kpis3 { grid-template-columns: repeat(2, 1fr); }
+  .split, .charts2 { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+  .top { padding: 8px 12px; flex-wrap: wrap; }
+  .nav { order: 3; flex-basis: 100%; }
+  .docs-top { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+  .dlg .grid { grid-template-columns: 1fr; }
+  .kpi b { font-size: 1.25rem; }
+  .hb { grid-template-columns: 64px 1fr 80px; }
+}
+
+/* ---------- печать ---------- */
+@media print {
+  .top, .hero, .form, .actions, footer, .faq, #toast, .nav { display: none !important; }
+  body { background: #fff; color: #000; }
+  body::before { display: none; }
+  .grid-calc { grid-template-columns: 1fr; }
+  .card { box-shadow: none; break-inside: avoid; }
+  .tab { display: none !important; }
+  #tab-calc { display: block !important; }
+}
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+</style>
+  <script>try { var t = JSON.parse(localStorage.getItem('bl_theme')); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+</head>
+<body>
+
+<header class="top">
+  <a class="brand" href="#calc" data-go="calc"><span class="logo">🌉</span><b>Bridge<span>Logix</span></b></a>
+  <nav class="nav" id="nav">
+    <button data-tab="calc" class="on">🧮 Калькулятор</button>
+    <button data-tab="compare">⚖️ Сравнение</button>
+    <button data-tab="docs">📄 Документы</button>
+    <button data-tab="track">📍 Трекер</button>
+    <button data-tab="stats">📊 Аналитика</button>
+    <button data-tab="tariffs">⚙️ Тарифы</button>
+  </nav>
+  <div class="tools">
+    <button class="icon" id="curBtn" title="Сменить валюту">₸</button>
+    <button class="icon" id="themeBtn" title="Тема">🌙</button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-text">
+    <span class="badge">🇰🇿 Шымкент ⇄ Узбекистан 🇺🇿</span>
+    <h1>Узнайте цену, срок и риски перевозки <em>до отправки груза</em></h1>
+    <p>Для небольших предпринимателей: честный расчёт по этапам, чек-лист документов и трекер поставок. Больше никаких сюрпризов на границе.</p>
+    <div class="hero-cta">
+      <button class="btn primary" data-go="calc">Рассчитать перевозку</button>
+      <button class="btn ghost" data-go="track">Мои поставки</button>
+    </div>
+    <div class="hero-stats">
+      <div><b>5</b><span>способов перевозки</span></div>
+      <div><b>5</b><span>этапов с рисками</span></div>
+      <div><b>8</b><span>категорий грузов</span></div>
+    </div>
+  </div>
+  <div class="hero-art" aria-hidden="true">
+    <svg viewBox="0 0 420 260">
+      <defs>
+        <linearGradient id="rg" x1="0" x2="1"><stop offset="0" stop-color="#06b6d4"/><stop offset="1" stop-color="#ec4899"/></linearGradient>
+      </defs>
+      <path id="routePath" d="M50 200 C 120 60, 200 240, 250 120 S 350 60, 375 70" fill="none" stroke="url(#rg)" stroke-width="6" stroke-linecap="round" stroke-dasharray="2 14"/>
+      <circle cx="50" cy="200" r="14" fill="#06b6d4"/><circle cx="375" cy="70" r="14" fill="#ec4899"/>
+      <text x="50" y="236" text-anchor="middle" class="svgt">Шымкент</text>
+      <text x="375" y="110" text-anchor="middle" class="svgt">Ташкент</text>
+      <rect x="236" y="100" width="28" height="40" rx="6" fill="#f59e0b" opacity=".9"/>
+      <text x="250" y="126" text-anchor="middle" font-size="20">🛃</text>
+      <g><text font-size="30" x="-15" y="10">🚚</text>
+        <animateMotion dur="7s" repeatCount="indefinite" path="M50 200 C 120 60, 200 240, 250 120 S 350 60, 375 70"/>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<main>
+  <!-- КАЛЬКУЛЯТОР -->
+  <section id="tab-calc" class="tab on">
+    <div class="grid-calc">
+      <aside class="card form">
+        <h2>Параметры перевозки</h2>
+
+        <label class="lbl">Направление</label>
+        <div class="seg" id="dirSeg">
+          <button data-dir="exp">🇰🇿 → 🇺🇿 Экспорт</button>
+          <button data-dir="imp">🇺🇿 → 🇰🇿 Импорт</button>
+        </div>
+
+        <label class="lbl" for="city">Город в Узбекистане</label>
+        <select id="city" data-k="city"></select>
+
+        <label class="lbl">Что везёте</label>
+        <div class="chips" id="cargoChips"></div>
+
+        <div class="row2">
+          <div><label class="lbl" for="weight">Вес, кг</label><input type="number" id="weight" data-k="weight" min="1" step="1"></div>
+          <div><label class="lbl" for="volume">Объём, м³</label><input type="number" id="volume" data-k="volume" min="0.1" step="0.1"></div>
+        </div>
+        <div class="presets">
+          <button data-preset="20,0.1">Посылка</button>
+          <button data-preset="300,2">Небольшая партия</button>
+          <button data-preset="1200,8">Газель</button>
+          <button data-preset="15000,60">Фура</button>
+        </div>
+
+        <label class="lbl" for="value">Стоимость товара, ₸</label>
+        <input type="number" id="value" data-k="value" min="0" step="10000">
+
+        <label class="lbl">Способ перевозки</label>
+        <div class="modes" id="modeCards"></div>
+
+        <label class="lbl">Опции и меры снижения риска</label>
+        <div class="switches" id="switches"></div>
+      </aside>
+
+      <div id="results"></div>
+    </div>
+
+    <div class="card faq">
+      <h3>❓ Частые вопросы</h3>
+      <div id="faq"></div>
+    </div>
+  </section>
+
+  <section id="tab-compare" class="tab"></section>
+  <section id="tab-docs" class="tab"></section>
+  <section id="tab-track" class="tab"></section>
+  <section id="tab-stats" class="tab"></section>
+  <section id="tab-tariffs" class="tab"></section>
+</main>
+
+<dialog id="shipDialog"></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<footer>
+  <p>BridgeLogix · учебный MVP для хакатона. Тарифы, сроки и вероятности — ориентировочные: перед отправкой уточняйте у перевозчика и таможенного брокера.</p>
+</footer>
+
+<script>
+/* =====================================================================
+   BridgeLogix — ДАННЫЕ
+   ВАЖНО: все тарифы, сроки и вероятности ПРИМЕРНЫЕ (демо-оценка).
+   Замените их реальными цифрами из интервью с перевозчиками/брокерами
+   (или прямо в интерфейсе, вкладка «Тарифы»).
+   ===================================================================== */
+
+/* Способы перевозки */
+const MODES = {
+  truck:   { name: 'Фура (отдельная машина)', short: 'Фура',   emoji: '🚛', type: 'veh', capKg: 20000, capM3: 82, kmPerDay: 600,  fixedDays: 0.2, borderDays: 1.5, distFactor: true,  color: '#6366f1', desc: 'От ~5 т или целая машина (20 т / 82 м³)' },
+  gazelle: { name: 'Газель / малотоннажник',  short: 'Газель', emoji: '🚐', type: 'veh', capKg: 1500,  capM3: 10, kmPerDay: 600,  fixedDays: 0.2, borderDays: 1.0, distFactor: true,  color: '#06b6d4', desc: 'До 1,5 т и 10 м³ — быстро и гибко' },
+  ltl:     { name: 'Сборный груз',            short: 'Сборный', emoji: '📦', type: 'kg',  kmPerDay: 450,  fixedDays: 1.0, borderDays: 1.2, distFactor: true,  color: '#f59e0b', desc: 'Платите за свой вес, но ждёте набор груза' },
+  rail:    { name: 'ЖД (контейнер)',          short: 'ЖД',     emoji: '🚆', type: 'kg',  kmPerDay: 300,  fixedDays: 2.0, borderDays: 2.0, distFactor: true,  color: '#10b981', desc: 'Дёшево для тяжёлых грузов, но медленно' },
+  air:     { name: 'Авиа',                    short: 'Авиа',   emoji: '✈️', type: 'kg',  kmPerDay: 8000, fixedDays: 0.5, borderDays: 0.5, distFactor: false, color: '#ec4899', desc: 'Максимально быстро, дорого' }
+};
+
+/* Города Узбекистана: примерное расстояние по дороге от Шымкента, км */
+const CITIES = {
+  tashkent:  { name: 'Ташкент',   km: 150 },
+  samarkand: { name: 'Самарканд', km: 450 },
+  fergana:   { name: 'Фергана',   km: 520 },
+  andijan:   { name: 'Андижан',   km: 600 },
+  bukhara:   { name: 'Бухара',    km: 760 }
+};
+
+const DIRS = {
+  exp: 'Шымкент → Узбекистан (экспорт)',
+  imp: 'Узбекистан → Шымкент (импорт)'
+};
+
+/* Документы */
+const DOCS = {
+  contract:  { title: 'Контракт / договор поставки',            where: 'Между продавцом и покупателем',            days: 0,   note: 'Укажите условия поставки (Incoterms) и порядок оплаты.' },
+  invoice:   { title: 'Счёт-фактура (инвойс)',                  where: 'Продавец',                                 days: 0,   note: 'Цена, количество и описание товара должны совпадать с декларацией.' },
+  packing:   { title: 'Упаковочный лист',                       where: 'Продавец / склад',                         days: 0,   note: 'Количество мест, вес нетто и брутто.' },
+  waybill:   { title: 'Транспортная накладная (CMR / ж/д / авиа)', where: 'Перевозчик',                            days: 0,   note: 'Оформляется под выбранный вид транспорта.' },
+  decl:      { title: 'Таможенная декларация на товары',        where: 'Таможенный брокер или личный кабинет',     days: 1,   note: 'Самый частый источник задержек — ошибки в коде товара (ТН ВЭД).' },
+  ecp:       { title: 'ЭЦП и доступ в кабинет налоговой/таможни', where: 'ЦОН / НУЦ',                              days: 1,   note: 'Нужна экспортёру для электронных документов.' },
+  origin:    { title: 'Сертификат происхождения',               where: 'Торгово-промышленная палата',              days: 2,   note: 'Нужен для льготных ставок пошлины. Уточните у брокера.' },
+  cert:      { title: 'Сертификат / декларация соответствия',   where: 'Орган по сертификации',                    days: 3,   note: 'Проверьте, требуется ли для вашей категории товара.' },
+  hygiene:   { title: 'Гигиеническое заключение',               where: 'Санитарно-эпидемиологическая служба',      days: 3,   note: 'Для косметики, детских и пищевых товаров.' },
+  phyto:     { title: 'Фитосанитарный / ветеринарный сертификат', where: 'Инспекция по карантину / ветеринарии',   days: 2,   note: 'Для продуктов растительного и животного происхождения.' },
+  marking:   { title: 'Маркировка товара (если требуется)',     where: 'Оператор маркировки',                      days: 1,   note: 'Для ряда товарных групп маркировка обязательна.' },
+  fragile:   { title: 'Акт состояния упаковки / фото груза',    where: 'Склад отправителя',                        days: 0,   note: 'Фото до погрузки защищают при спорах о повреждениях.' },
+  coldchain: { title: 'Температурный режим (рефрижератор, термописец)', where: 'Перевозчик',                       days: 0,   note: 'Для скоропортящихся грузов подтверждение холодовой цепи.' },
+  policy:    { title: 'Страховой полис груза',                  where: 'Страховая компания',                       days: 1,   note: 'Оформите до погрузки.' }
+};
+const BASE_DOCS = ['contract', 'invoice', 'packing', 'waybill', 'decl'];
+
+/* Категории грузов. duty — ориентировочная пошлина, % */
+const CARGO = {
+  clothes:     { name: 'Одежда и обувь',   emoji: '👕', duty: 10, perishable: false, fragile: false, docs: ['cert', 'marking'] },
+  electronics: { name: 'Электроника',      emoji: '📱', duty: 5,  perishable: false, fragile: true,  docs: ['cert', 'fragile'] },
+  food:        { name: 'Продукты питания', emoji: '🍎', duty: 15, perishable: true,  fragile: false, docs: ['phyto', 'hygiene', 'coldchain'] },
+  cosmetics:   { name: 'Косметика',        emoji: '💄', duty: 10, perishable: false, fragile: true,  docs: ['hygiene', 'cert'] },
+  autoparts:   { name: 'Автозапчасти',     emoji: '🔧', duty: 10, perishable: false, fragile: false, docs: ['cert', 'origin'] },
+  building:    { name: 'Стройматериалы',   emoji: '🧱', duty: 10, perishable: false, fragile: false, docs: ['cert', 'origin'] },
+  furniture:   { name: 'Мебель',           emoji: '🪑', duty: 15, perishable: false, fragile: true,  docs: ['cert', 'fragile'] },
+  household:   { name: 'Товары для дома',  emoji: '🏠', duty: 10, perishable: false, fragile: false, docs: ['cert'] }
+};
+
+/* Этапы перевозки */
+const STAGES = [
+  { id: 'pickup',   name: 'Забор груза и упаковка',         emoji: '📦', color: '#f59e0b' },
+  { id: 'docs',     name: 'Документы и декларация',         emoji: '📑', color: '#8b5cf6' },
+  { id: 'border',   name: 'Граница и таможня',              emoji: '🛃', color: '#ef4444' },
+  { id: 'linehaul', name: 'Перевозка',                      emoji: '🛣️', color: '#06b6d4' },
+  { id: 'lastmile', name: 'Выгрузка и доставка получателю', emoji: '🏁', color: '#10b981' }
+];
+
+const STAGE_TIPS = {
+  pickup:   ['Упакуйте груз заранее и сфотографируйте перед погрузкой.', 'Сверьте количество мест с упаковочным листом.', 'Договоритесь о точном времени подачи машины.'],
+  docs:     ['Проверьте код товара (ТН ВЭД) — ошибки здесь дают самые долгие простои.', 'Названия и цены в инвойсе должны совпадать с декларацией.', 'Подайте документы брокеру заранее, до загрузки машины.'],
+  border:   ['Подайте предварительную декларацию до подхода к границе.', 'Следите за очередью и избегайте пятниц и понедельников.', 'Держите оригиналы и копии документов в машине.'],
+  linehaul: ['Запросите у перевозчика трекинг или регулярные отметки о местоположении.', 'Заранее согласуйте маршрут и ответственность за простой.', 'Для хрупких грузов проверьте крепление.'],
+  lastmile: ['Предупредите получателя о времени прибытия.', 'Проверяйте груз при приёмке и фиксируйте повреждения актом.', 'Заранее уточните режим работы склада получателя.']
+};
+
+const STAGE_ADVICE = {
+  pickup:   'Заранее подготовьте и упакуйте груз.',
+  docs:     'Отдайте документы брокеру до загрузки машины и проверьте код товара.',
+  border:   'Подайте предварительную декларацию и выберите непиковое время.',
+  linehaul: 'Договоритесь о трекинге и ответственности за простой.',
+  lastmile: 'Согласуйте с получателем время и режим приёмки.'
+};
+
+/* Приоритеты при выборе способа */
+const PRIORITIES = {
+  cheap:    { name: '💸 Дешевле',    w: { c: 0.6,  t: 0.2,  r: 0.2 } },
+  fast:     { name: '⚡ Быстрее',    w: { c: 0.15, t: 0.65, r: 0.2 } },
+  safe:     { name: '🛡️ Надёжнее',  w: { c: 0.2,  t: 0.2,  r: 0.6 } },
+  balanced: { name: '⚖️ Баланс',    w: { c: 0.4,  t: 0.35, r: 0.25 } }
+};
+
+/* Статусы поставки в трекере */
+const STATUSES = [
+  { id: 'planned',   name: 'Планируется', emoji: '🗓️' },
+  { id: 'pickup',    name: 'Забор груза', emoji: '📦' },
+  { id: 'docs',      name: 'Документы',   emoji: '📑' },
+  { id: 'border',    name: 'Граница',     emoji: '🛃' },
+  { id: 'transit',   name: 'В пути',      emoji: '🚚' },
+  { id: 'delivered', name: 'Доставлено',  emoji: '✅' }
+];
+
+/* Настройки по умолчанию (редактируются во вкладке «Тарифы») */
+const DEFAULT_SETTINGS = {
+  sourceNote: 'Демо-оценка. Замените цифры реальными данными перевозчиков и брокеров.',
+  usdRate: 510,
+  vatUZ: 12,
+  vatKZ: 16,
+  volumetricKg: 250,
+  insurancePct: 0.3,
+  brokerFee: 25000,
+  perDocFee: 4000,
+  expressMarkup: 25,
+  modes: {
+    truck:   { fixed: 120000, perKm: 700, borderFee: 30000, idleDay: 40000 },
+    gazelle: { fixed: 20000,  perKm: 300, borderFee: 15000, idleDay: 20000 },
+    ltl:     { fixed: 5000,   perKg: 95,  minCharge: 15000,  borderFee: 10000, idleDay: 5000 },
+    rail:    { fixed: 40000,  perKg: 35,  minCharge: 120000, borderFee: 40000, idleDay: 8000 },
+    air:     { fixed: 15000,  perKg: 700, minCharge: 30000,  borderFee: 12000, idleDay: 5000 }
+  },
+  duty: Object.fromEntries(Object.keys(CARGO).map(k => [k, CARGO[k].duty]))
+};
+
+/* Поля редактора тарифов */
+const GLOBAL_FIELDS = [
+  { k: 'usdRate',       label: 'Курс доллара',                    unit: '₸ за $1' },
+  { k: 'vatUZ',         label: 'НДС в Узбекистане (экспорт)',     unit: '%' },
+  { k: 'vatKZ',         label: 'НДС в Казахстане (импорт)',       unit: '%' },
+  { k: 'volumetricKg',  label: 'Объёмный вес 1 м³',               unit: 'кг' },
+  { k: 'insurancePct',  label: 'Страховка от стоимости товара',   unit: '%' },
+  { k: 'brokerFee',     label: 'Услуги брокера (база)',           unit: '₸' },
+  { k: 'perDocFee',     label: 'Доплата за каждый документ',      unit: '₸' },
+  { k: 'expressMarkup', label: 'Наценка за срочность',            unit: '%' }
+];
+const MODE_FIELDS = {
+  veh: [
+    { k: 'fixed',     label: 'Фиксированная часть за рейс', unit: '₸' },
+    { k: 'perKm',     label: 'Ставка за километр',          unit: '₸/км' },
+    { k: 'borderFee', label: 'Сборы на границе за машину',  unit: '₸' },
+    { k: 'idleDay',   label: 'Стоимость дня простоя',       unit: '₸/день' }
+  ],
+  kg: [
+    { k: 'fixed',     label: 'Фиксированная часть',        unit: '₸' },
+    { k: 'perKg',     label: 'Ставка за кг',               unit: '₸/кг' },
+    { k: 'minCharge', label: 'Минимальная плата',          unit: '₸' },
+    { k: 'borderFee', label: 'Сборы на границе',           unit: '₸' },
+    { k: 'idleDay',   label: 'Стоимость дня простоя',      unit: '₸/день' }
+  ]
+};
+
+const FAQ = [
+  { q: 'Где чаще всего теряется время?', a: 'Как правило — на документах и границе: ошибка в коде товара, нехватка сертификата или очередь. Поэтому калькулятор отдельно показывает риск каждого этапа.' },
+  { q: 'Почему цена за кг у малой партии выше?', a: 'Большая часть расходов фиксированная: брокер, граница, подача машины. Чем меньше груз, тем сильнее они «размазываются» на каждый килограмм.' },
+  { q: 'Что такое объёмный вес?', a: 'Лёгкий, но объёмный груз (подушки, пластик) занимает много места. Перевозчик считает по большему из двух значений — фактического или объёмного веса.' },
+  { q: 'Насколько точны цифры?', a: 'Это модель с примерными тарифами. Во вкладке «Тарифы» подставьте реальные цены и дату обновления — расчёт пересчитается сразу.' }
+];
+
+/* =====================================================================
+   BridgeLogix — ДВИЖОК РАСЧЁТА
+   Чистые функции без DOM. Зависит только от data.js.
+   Логика «умного советника» — на правилах (rule-based): прозрачно и
+   проверяемо. Функцию advice() можно заменить/дополнить вызовом ИИ-API.
+   ===================================================================== */
+
+function deepClone(o) { return JSON.parse(JSON.stringify(o)); }
+function fmt1(n) { return (Math.round(n * 10) / 10).toString().replace('.', ','); }
+function fmtKZT(n) { return Math.round(n).toLocaleString('ru-RU') + ' ₸'; }
+
+/* Список нужных документов под груз и направление */
+function docIdsFor(inp) {
+  const ids = [...BASE_DOCS];
+  CARGO[inp.cargo].docs.forEach(d => { if (!ids.includes(d)) ids.push(d); });
+  if (inp.dir === 'exp') ids.push('ecp');
+  if (inp.insurance) ids.push('policy');
+  return ids;
+}
+
+/* Расчёт одной перевозки выбранным способом */
+function calcShipment(inp, S, modeKey) {
+  const mk = modeKey || inp.mode;
+  const M = MODES[mk], P = S.modes[mk];
+  const cargo = CARGO[inp.cargo], city = CITIES[inp.city];
+  const w = Math.max(0, +inp.weight || 0);
+  const v = Math.max(0, +inp.volume || 0);
+  const val = Math.max(0, +inp.value || 0);
+  const dist = city.km;
+  const chargeable = Math.max(w, v * S.volumetricKg);
+  const isVeh = M.type === 'veh';
+  const express = inp.urgent ? 1 + S.expressMarkup / 100 : 1;
+
+  /* --- стоимость перевозки --- */
+  let vehicles = 1, line;
+  if (isVeh) {
+    vehicles = Math.max(1, Math.ceil(Math.max(w / M.capKg, v / M.capM3)));
+    line = vehicles * (P.fixed + P.perKm * dist);
+  } else {
+    const f = M.distFactor ? 0.6 + dist / 500 : 1;
+    line = Math.max(P.minCharge, P.fixed + P.perKg * chargeable * f);
+  }
+  line *= express;
+
+  const ids = docIdsFor(inp);
+  const costs = {
+    pickup:   6000 + w * 6,
+    docs:     S.brokerFee + ids.length * S.perDocFee,
+    border:   P.borderFee * (isVeh ? vehicles : 1),
+    linehaul: line,
+    lastmile: (7000 + chargeable * 4) * express
+  };
+
+  /* --- сроки, дни --- */
+  const d = {
+    pickup: 0.5,
+    docs: cargo.docs.length ? 1.5 : 1,
+    border: M.borderDays,
+    linehaul: dist / M.kmPerDay + M.fixedDays,
+    lastmile: mk === 'ltl' ? 0.7 : 0.5
+  };
+  if (inp.docsPrepared) d.docs = 0.3;
+  if (inp.preDecl) d.border = Math.max(0.3, d.border - 0.4);
+  if (inp.eQueue && isVeh) d.border *= 0.75;
+  if (inp.urgent && mk !== 'air') d.linehaul *= 0.8;
+
+  /* --- вероятность задержки на этапе, % --- */
+  const rk = { pickup: 10, docs: 30 + (cargo.docs.length >= 2 ? 5 : 0), border: 40, linehaul: 15, lastmile: 15 };
+  if (cargo.perishable) { rk.border *= 1.3; rk.linehaul *= 1.3; }
+  if (cargo.fragile) { rk.linehaul *= 1.2; rk.lastmile *= 1.2; }
+  if (mk === 'air') rk.border *= 0.5;
+  if (mk === 'rail') rk.border *= 1.1;
+  if (inp.docsPrepared) rk.docs *= 0.4;
+  if (inp.preDecl) rk.border *= 0.7;
+  if (inp.eQueue && isVeh) rk.border *= 0.6;
+  if (inp.offPeak) rk.border *= 0.85;
+  Object.keys(rk).forEach(k => { rk[k] = Math.min(90, rk[k]); });
+
+  /* --- на сколько дней сдвигается срок, если задержка случилась --- */
+  const dl = { pickup: 0.5, docs: 1.5, border: isVeh ? 3 : 2, linehaul: 1, lastmile: 0.7 };
+
+  const stages = STAGES.map(st => ({
+    id: st.id, name: st.name, emoji: st.emoji, color: st.color,
+    cost: costs[st.id], days: d[st.id], risk: rk[st.id], delay: dl[st.id],
+    exp: rk[st.id] / 100 * dl[st.id]
+  }));
+
+  const stagesCost = stages.reduce((a, s) => a + s.cost, 0);
+  const baseDays = stages.reduce((a, s) => a + s.days, 0);
+  const expDelay = stages.reduce((a, s) => a + s.exp, 0);
+  const worstDelay = stages.reduce((a, s) => a + s.delay, 0);
+  const riskAny = 1 - stages.reduce((a, s) => a * (1 - s.risk / 100), 1);
+
+  /* --- платежи --- */
+  const dutyRate = (S.duty && S.duty[inp.cargo] != null) ? S.duty[inp.cargo] : cargo.duty;
+  const duty = inp.includeTaxes ? val * dutyRate / 100 : 0;
+  const vat = inp.includeTaxes ? (val + duty) * (inp.dir === 'exp' ? S.vatUZ : S.vatKZ) / 100 : 0;
+  const insurance = inp.insurance ? val * S.insurancePct / 100 : 0;
+
+  const base = stagesCost + duty + vat + insurance;
+  const reserve = expDelay * P.idleDay * vehicles;
+
+  const r = {
+    mode: mk, stages, stagesCost, duty, vat, insurance, dutyRate,
+    base, reserve, total: base + reserve, logCost: stagesCost + reserve,
+    baseDays, expDelay, expDays: baseDays + expDelay, worstDays: baseDays + worstDelay,
+    riskAny, vehicles, chargeable, perKg: (base + reserve) / Math.max(w, 1),
+    docIds: ids, distKm: dist
+  };
+  r.fit = modeFit(mk, inp, r);
+  return r;
+}
+
+/* Подходит ли способ под груз */
+function modeFit(mk, inp, r) {
+  const w = +inp.weight || 0, v = +inp.volume || 0;
+  const cargo = CARGO[inp.cargo];
+  if (mk === 'air' && w > 3000) return { ok: false, note: 'Авиа обычно невыгодно для грузов тяжелее 3 т' };
+  if (mk === 'ltl' && (w > 5000 || v > 30)) return { ok: false, note: 'Для такого объёма лучше отдельная машина' };
+  if (mk === 'gazelle' && r.vehicles > 3) return { ok: false, note: 'Потребуется ' + r.vehicles + ' рейсов — выгоднее фура' };
+  if (mk === 'truck' && w < 800 && v < 4) return { ok: false, note: 'Машина будет почти пустой — выгоднее сборный груз или газель' };
+  if (mk === 'rail' && cargo.perishable) return { ok: false, note: 'Скоропортящийся груз по ЖД — рискованно' };
+  if (mk === 'rail' && w < 2000) return { ok: false, note: 'ЖД оправдана примерно от 2 т' };
+  return { ok: true, note: '' };
+}
+
+/* Сравнение всех способов и выбор рекомендуемого */
+function compareAll(inp, S) {
+  const list = Object.keys(MODES).map(k => calcShipment(inp, S, k));
+  const pool = list.filter(r => r.fit.ok);
+  const use = pool.length ? pool : list;
+  const W = PRIORITIES[inp.priority || 'balanced'].w;
+  const minC = Math.max(1, Math.min(...use.map(r => r.logCost)));
+  const minT = Math.max(0.1, Math.min(...use.map(r => r.expDays)));
+  const minR = Math.max(0.01, Math.min(...use.map(r => r.riskAny)));
+  list.forEach(r => {
+    r.score = W.c * r.logCost / minC + W.t * r.expDays / minT + W.r * r.riskAny / minR;
+    r.tags = [];
+    r.recommended = false;
+  });
+  const pick = (key) => use.reduce((a, b) => (b[key] < a[key] ? b : a));
+  const rec = use.reduce((a, b) => (b.score < a.score ? b : a));
+  rec.recommended = true;
+  pick('logCost').tags.push('💸 Дешевле всего');
+  pick('expDays').tags.push('⚡ Быстрее всего');
+  pick('riskAny').tags.push('🛡️ Надёжнее всего');
+  return list;
+}
+
+/* Умный советник: список подсказок. money — форматтер денег из интерфейса */
+function advice(inp, S, r, all, money) {
+  const out = [];
+  const cargo = CARGO[inp.cargo];
+  const worst = [...r.stages].sort((a, b) => b.exp - a.exp)[0];
+  out.push({
+    type: 'warn', icon: worst.emoji,
+    title: 'Главный риск — «' + worst.name + '»',
+    text: 'Вероятность задержки ' + Math.round(worst.risk) + '%, при срыве срок вырастет примерно на ' + fmt1(worst.delay) + ' дн. ' + STAGE_ADVICE[worst.id]
+  });
+
+  const allOn = inp.docsPrepared && inp.preDecl && (inp.eQueue || MODES[r.mode].type !== 'veh') && inp.offPeak;
+  if (!allOn) {
+    const best = calcShipment({ ...inp, docsPrepared: true, preDecl: true, eQueue: true, offPeak: true }, S, r.mode);
+    const saveD = r.expDelay - best.expDelay;
+    const saveM = r.reserve - best.reserve;
+    if (saveD > 0.15) {
+      out.push({
+        type: 'tip', icon: '🚀', title: 'Включите меры снижения риска',
+        text: 'Документы заранее, предварительная декларация, электронная очередь и непиковое время сократят ожидаемую задержку примерно на ' + fmt1(saveD) + ' дн.' + (saveM > 0 ? ' и сэкономят около ' + money(saveM) + ' на простоях.' : '.')
+      });
+    }
+  }
+
+  const rec = all.find(x => x.recommended);
+  if (rec && rec.mode !== r.mode) {
+    const dC = r.logCost - rec.logCost, dT = r.expDays - rec.expDays;
+    const parts = [];
+    if (dC > 0) parts.push('дешевле на ' + money(dC)); else if (dC < 0) parts.push('дороже на ' + money(-dC));
+    if (dT > 0.1) parts.push('быстрее на ' + fmt1(dT) + ' дн.'); else if (dT < -0.1) parts.push('медленнее на ' + fmt1(-dT) + ' дн.');
+    out.push({
+      type: 'info', icon: MODES[rec.mode].emoji, title: 'Для ваших условий лучше: ' + MODES[rec.mode].name,
+      text: 'По выбранному приоритету это ' + (parts.length ? parts.join(', ') : 'оптимальный вариант') + ' относительно текущего выбора.'
+    });
+  }
+  if (!r.fit.ok) {
+    out.push({ type: 'warn', icon: '⚠️', title: 'Способ может не подойти', text: r.fit.note + '.' });
+  }
+
+  const volW = (+inp.volume || 0) * S.volumetricKg;
+  if (volW > (+inp.weight || 0) * 1.2) {
+    out.push({
+      type: 'info', icon: '📐', title: 'Платите за объёмный вес',
+      text: 'Объём соответствует ~' + Math.round(volW) + ' кг при фактическом весе ' + Math.round(+inp.weight || 0) + ' кг. Плотнее упакуйте груз — это снизит стоимость.'
+    });
+  }
+  if (cargo.perishable) {
+    out.push({ type: 'warn', icon: '🧊', title: 'Скоропортящийся груз', text: 'Нужен рефрижератор или быстрый способ и подтверждение холодовой цепи. Любая задержка на границе опасна для срока годности.' });
+  }
+  if ((+inp.value || 0) > 2000000 && !inp.insurance) {
+    out.push({ type: 'tip', icon: '🛡️', title: 'Застрахуйте груз', text: 'Стоимость товара высокая. Страховка обойдётся примерно в ' + money((+inp.value) * S.insurancePct / 100) + ' и покроет потерю или повреждение.' });
+  }
+  if (r.vehicles > 1) {
+    out.push({ type: 'info', icon: '🚚', title: 'Потребуется ' + r.vehicles + ' машины', text: 'Груз не помещается в одну машину выбранного типа. Рассмотрите машину большей вместимости.' });
+  }
+  return out;
+}
+
+/* Текстовый отчёт для копирования */
+function reportText(inp, S, r, money) {
+  const lines = [];
+  lines.push('BridgeLogix — расчёт перевозки');
+  lines.push(DIRS[inp.dir] + ' · ' + CITIES[inp.city].name + ' (~' + r.distKm + ' км)');
+  lines.push('Груз: ' + CARGO[inp.cargo].name + ', ' + inp.weight + ' кг, ' + inp.volume + ' м³, стоимость ' + fmtKZT(inp.value));
+  lines.push('Способ: ' + MODES[r.mode].name + (inp.urgent ? ' (срочно)' : ''));
+  lines.push('');
+  r.stages.forEach(s => lines.push('• ' + s.name + ': ' + fmt1(s.days) + ' дн., ' + money(s.cost) + ', риск ' + Math.round(s.risk) + '%'));
+  if (r.duty + r.vat > 0) lines.push('• Пошлина и НДС: ' + money(r.duty + r.vat));
+  if (r.insurance > 0) lines.push('• Страховка: ' + money(r.insurance));
+  lines.push('');
+  lines.push('Итого: ' + money(r.base) + ' (с резервом на задержки: ' + money(r.total) + ')');
+  lines.push('Срок: ' + fmt1(r.baseDays) + ' дн. по плану, ~' + fmt1(r.expDays) + ' дн. ожидаемо, до ' + fmt1(r.worstDays) + ' дн. в худшем случае');
+  lines.push('Вероятность хотя бы одной задержки: ' + Math.round(r.riskAny * 100) + '%');
+  lines.push('');
+  lines.push('Источник тарифов: ' + S.sourceNote);
+  return lines.join('\n');
+}
+
+/* =====================================================================
+   BridgeLogix — ЛОГИКА ИНТЕРФЕЙСА
+   Вкладки: калькулятор, сравнение, документы, трекер, аналитика, тарифы
+   ===================================================================== */
+'use strict';
+
+/* ---------- утилиты ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* хранилище недоступно */ } }
+};
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const nf = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 });
+const today = () => new Date().toISOString().slice(0, 10);
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+
+/* ---------- состояние ---------- */
+const DEFAULT_STATE = {
+  dir: 'exp', city: 'tashkent', cargo: 'clothes', weight: 500, volume: 3, value: 3000000,
+  mode: 'ltl', priority: 'balanced',
+  urgent: false, docsPrepared: false, preDecl: false, eQueue: false, offPeak: false, insurance: false, includeTaxes: true
+};
+
+function mergeSettings(saved) {
+  const s = deepClone(DEFAULT_SETTINGS);
+  if (saved) {
+    for (const k in saved) {
+      if (k === 'modes') { for (const m in saved.modes) if (s.modes[m]) Object.assign(s.modes[m], saved.modes[m]); }
+      else if (k === 'duty') Object.assign(s.duty, saved.duty);
+      else s[k] = saved[k];
+    }
+  }
+  return s;
+}
+
+let state = Object.assign({}, DEFAULT_STATE, store.get('bl_state', {}));
+let S = mergeSettings(store.get('bl_settings', null));
+let ship = store.get('bl_ship', []);
+let docsDone = store.get('bl_docs', {});
+const ui = { cur: store.get('bl_cur', 'KZT'), tab: 'calc', filter: 'all', open: new Set() };
+const TABS = ['calc', 'compare', 'docs', 'track', 'stats', 'tariffs'];
+
+/* ---------- форматирование ---------- */
+function money(n) {
+  return ui.cur === 'USD' ? '$' + nf.format(n / (S.usdRate || 1)) : nf.format(n) + ' ₸';
+}
+const dd = (n) => fmt1(n) + ' дн.';
+function toast(msg) {
+  const t = $('#toast'); if (!t) return;
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2200);
+}
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); }
+  catch (e) { const a = document.createElement('textarea'); a.value = text; document.body.appendChild(a); a.select(); try { document.execCommand('copy'); } catch (e2) { /* нет доступа */ } a.remove(); }
+  toast('Скопировано ✅');
+}
+function persist() { store.set('bl_state', state); }
+
+/* ---------- графики ---------- */
+function donut(items, centerTop, centerBottom) {
+  const total = items.reduce((a, i) => a + i.value, 0) || 1;
+  const R = 54, C = 2 * Math.PI * R;
+  let off = 0;
+  const arcs = items.map(i => {
+    const len = i.value / total * C;
+    const el = `<circle r="${R}" cx="80" cy="80" fill="none" stroke="${i.color}" stroke-width="22" stroke-dasharray="${len.toFixed(2)} ${(C - len).toFixed(2)}" stroke-dashoffset="${(-off).toFixed(2)}"/>`;
+    off += len; return el;
+  }).join('');
+  return `<svg class="donut" viewBox="0 0 160 160"><g transform="rotate(-90 80 80)">${arcs}</g>
+    <text x="80" y="76" text-anchor="middle" font-size="11" fill="currentColor" opacity=".65">${centerTop}</text>
+    <text x="80" y="95" text-anchor="middle" font-size="14" font-weight="800" fill="currentColor">${centerBottom}</text></svg>`;
+}
+function hbars(items, fmtv) {
+  const max = Math.max(...items.map(i => i.value), 0.0001);
+  return items.map(i => `<div class="hb"><div>${i.label}</div><div class="hb-t"><i style="width:${(i.value / max * 100).toFixed(1)}%;background:${i.color}"></i></div><div class="hb-v">${fmtv(i.value)}</div></div>`).join('');
+}
+
+/* =====================================================================
+   КАЛЬКУЛЯТОР
+   ===================================================================== */
+const SWITCHES = [
+  { k: 'urgent',       icon: '⚡',  t: 'Срочная доставка',               d: () => 'Быстрее примерно на 20%, дороже на ' + S.expressMarkup + '%' },
+  { k: 'docsPrepared', icon: '📑',  t: 'Документы готовы заранее',       d: () => 'Меньше ошибок и простоя на оформлении' },
+  { k: 'preDecl',      icon: '📝',  t: 'Предварительная декларация',     d: () => 'Данные поданы до подхода к границе' },
+  { k: 'eQueue',       icon: '🕒',  t: 'Электронная очередь / запись',   d: () => 'Для авто, если такая услуга доступна' },
+  { k: 'offPeak',      icon: '📆',  t: 'Не в часы пик',                  d: () => 'Избегать пятниц и понедельников' },
+  { k: 'insurance',    icon: '🛡️', t: 'Страхование груза',              d: () => '+' + String(S.insurancePct).replace('.', ',') + '% от стоимости товара' },
+  { k: 'includeTaxes', icon: '🧾',  t: 'Учесть пошлину и НДС',           d: () => 'Если платите вы' }
+];
+
+function buildForm() {
+  $('#city').innerHTML = Object.keys(CITIES).map(k => `<option value="${k}">${CITIES[k].name} · ~${CITIES[k].km} км</option>`).join('');
+  $('#cargoChips').innerHTML = Object.keys(CARGO).map(k => `<button type="button" class="chip" data-cargo="${k}"><span class="e">${CARGO[k].emoji}</span>${CARGO[k].name}</button>`).join('');
+  $('#switches').innerHTML = SWITCHES.map(s => `<label class="sw"><span>${s.icon}</span><div><b>${s.t}</b><small data-sd="${s.k}"></small></div><input type="checkbox" data-k="${s.k}"><span class="tg"></span></label>`).join('');
+  $('#faq').innerHTML = FAQ.map(f => `<details><summary>${f.q}</summary><p>${f.a}</p></details>`).join('');
+}
+
+function syncForm() {
+  $$('[data-dir]').forEach(b => b.classList.toggle('on', b.dataset.dir === state.dir));
+  $$('[data-cargo]').forEach(b => b.classList.toggle('on', b.dataset.cargo === state.cargo));
+  $$('input[data-k], select[data-k]').forEach(el => {
+    const k = el.dataset.k;
+    if (el.type === 'checkbox') el.checked = !!state[k]; else el.value = state[k];
+  });
+  SWITCHES.forEach(s => { const el = $('[data-sd="' + s.k + '"]'); if (el) el.textContent = s.d(); });
+}
+
+function renderModeCards(all) {
+  $('#modeCards').innerHTML = all.map(r => {
+    const M = MODES[r.mode];
+    return `<button type="button" class="mode ${state.mode === r.mode ? 'on' : ''} ${r.fit.ok ? '' : 'bad'}" data-mode="${r.mode}" title="${esc(r.fit.note || M.desc)}">
+      <span class="me">${M.emoji}</span>
+      <span><b>${M.short} ${r.recommended ? '<span class="star">★</span>' : ''}</b><small>${r.fit.ok ? M.desc : esc(r.fit.note)}</small></span>
+      <span class="mp">${money(r.total)}<small>~${fmt1(r.expDays)} дн.</small></span></button>`;
+  }).join('');
+}
+
+function renderCalc() {
+  const r = calcShipment(state, S);
+  const all = compareAll(state, S);
+  renderModeCards(all);
+  const adv = advice(state, S, r, all, money);
+  const total = r.baseDays || 1;
+  let cum = 0;
+
+  const stagesHtml = r.stages.map(s => {
+    const start = cum; cum += s.days;
+    const rc = s.risk >= 35 ? 'hi' : s.risk >= 20 ? 'mid' : 'lo';
+    return `<li class="stage" style="--c:${s.color}">
+      <div class="dot">${s.emoji}</div>
+      <div>
+        <div class="stage-head"><b>${s.name}</b><span class="pill">день ${fmt1(start)} → ${fmt1(cum)}</span></div>
+        <div class="stage-meta"><span>⏱ ${dd(s.days)}</span><span>💰 ${money(s.cost)}</span><span class="risk ${rc}">⚠ риск задержки ${Math.round(s.risk)}%</span></div>
+        <div class="gantt"><i style="left:${(start / total * 100).toFixed(1)}%;width:${Math.max(2, s.days / total * 100).toFixed(1)}%"></i></div>
+        <details data-stage="${s.id}" ${ui.open.has(s.id) ? 'open' : ''}><summary>Что делать и чего ждать</summary><ul>${STAGE_TIPS[s.id].map(t => `<li>${t}</li>`).join('')}</ul></details>
+      </div></li>`;
+  }).join('');
+
+  const parts = r.stages.map(s => ({ label: s.name, value: s.cost, color: s.color }));
+  if (r.duty + r.vat > 0) parts.push({ label: 'Пошлина и НДС', value: r.duty + r.vat, color: '#ec4899' });
+  if (r.insurance > 0) parts.push({ label: 'Страховка', value: r.insurance, color: '#14b8a6' });
+
+  const risk = Math.round(r.riskAny * 100);
+  $('#results').innerHTML = `
+    <div class="kpis">
+      <div class="kpi k1"><small>💰 Итого</small><b>${money(r.total)}</b><span>с резервом на задержки · без резерва ${money(r.base)}</span></div>
+      <div class="kpi k2"><small>⏱ Срок</small><b>~${fmt1(r.expDays)} дн.</b><span>по плану ${fmt1(r.baseDays)} · худший случай ${fmt1(r.worstDays)}</span></div>
+      <div class="kpi k3"><small>⚠️ Риск задержки</small><b>${risk}%</b><span>вероятность хотя бы одной</span></div>
+      <div class="kpi k4"><small>⚖️ Цена за кг</small><b>${money(r.perKg)}</b><span>${r.vehicles > 1 ? r.vehicles + ' машины · ' : ''}расч. вес ${nf.format(r.chargeable)} кг</span></div>
+    </div>
+
+    <div class="split">
+      <div class="card">
+        <h3>🗺️ Путь груза по этапам</h3>
+        <div class="src">${MODES[r.mode].emoji} ${MODES[r.mode].name} · ${esc(DIRS[state.dir])} · ${CITIES[state.city].name} (~${r.distKm} км)</div>
+        <ul class="timeline">${stagesHtml}</ul>
+      </div>
+      <div class="card">
+        <h3>🍩 Из чего складывается цена</h3>
+        <div class="donut-wrap">
+          ${donut(parts, 'всего', money(r.base))}
+          <div class="legend">${parts.map(p => `<div><i style="background:${p.color}"></i><span>${p.label}</span><b>${money(p.value)}</b></div>`).join('')}</div>
+        </div>
+        <div class="totals">
+          <div><span>Услуги и перевозка</span><b>${money(r.stagesCost)}</b></div>
+          <div><span>Пошлина и НДС</span><b>${money(r.duty + r.vat)}</b></div>
+          <div><span>Страховка</span><b>${money(r.insurance)}</b></div>
+          <div><span>Резерв на простои (ожидаемо)</span><b>${money(r.reserve)}</b></div>
+          <div class="big"><span>Итого с резервом</span><b>${money(r.total)}</b></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>🧠 Умный советник</h3>
+      <div class="advice">${adv.map(a => `<div class="adv ${a.type}"><div class="ai">${a.icon}</div><div><b>${esc(a.title)}</b><p>${esc(a.text)}</p></div></div>`).join('')}</div>
+      <div class="actions" style="margin-top:14px">
+        <button class="btn solid" data-act="save">📍 Сохранить в трекер</button>
+        <button class="btn line" data-act="docs">📄 Документы для этого груза</button>
+        <button class="btn line" data-act="copy">📋 Копировать расчёт</button>
+        <button class="btn line" data-act="share">🔗 Поделиться ссылкой</button>
+        <button class="btn line" data-act="print">🖨️ Печать / PDF</button>
+      </div>
+      <div class="src">Источник тарифов: ${esc(S.sourceNote)}</div>
+    </div>`;
+}
+
+/* =====================================================================
+   СРАВНЕНИЕ
+   ===================================================================== */
+function renderCompare() {
+  const all = compareAll(state, S);
+  const prio = Object.keys(PRIORITIES).map(k => `<button data-prio="${k}" class="${state.priority === k ? 'on' : ''}">${PRIORITIES[k].name}</button>`).join('');
+  const cards = all.map(r => {
+    const M = MODES[r.mode];
+    return `<div class="cmp-card ${r.recommended ? 'rec' : ''} ${r.fit.ok ? '' : 'na'}">
+      ${r.recommended ? '<span class="ribbon">⭐ Рекомендуем</span>' : ''}
+      <div class="ce">${M.emoji}</div><h3>${M.name}</h3>
+      <div class="price">${money(r.total)}</div>
+      <div class="row"><span>Срок ожидаемо</span><b>${dd(r.expDays)}</b></div>
+      <div class="row"><span>Худший случай</span><b>${dd(r.worstDays)}</b></div>
+      <div class="row"><span>Риск задержки</span><b>${Math.round(r.riskAny * 100)}%</b></div>
+      <div class="row"><span>Цена за кг</span><b>${money(r.perKg)}</b></div>
+      <div class="tags">${r.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+      ${r.fit.ok ? '' : `<div class="warn-note">⚠ ${esc(r.fit.note)}</div>`}
+      <button class="btn ${state.mode === r.mode ? 'solid' : 'line'} sm" data-mode="${r.mode}" data-jump="1">${state.mode === r.mode ? '✓ Выбрано' : 'Выбрать'}</button>
+    </div>`;
+  }).join('');
+  $('#tab-compare').innerHTML = `
+    <div class="head-row"><div><h2>⚖️ Какой способ выбрать?</h2><p>Сравнение по вашему грузу: ${CARGO[state.cargo].emoji} ${CARGO[state.cargo].name}, ${nf.format(state.weight)} кг, ${CITIES[state.city].name}</p></div>
+    <div class="fseg" id="prioSeg">${prio}</div></div>
+    <div class="cmp">${cards}</div>
+    <div class="charts2">
+      <div class="card"><h3>💰 Стоимость с резервом</h3>${hbars(all.map(r => ({ label: MODES[r.mode].short, value: r.total, color: MODES[r.mode].color })), money)}</div>
+      <div class="card"><h3>⏱ Ожидаемый срок</h3>${hbars(all.map(r => ({ label: MODES[r.mode].short, value: r.expDays, color: MODES[r.mode].color })), dd)}</div>
+    </div>`;
+}
+
+/* =====================================================================
+   ДОКУМЕНТЫ
+   ===================================================================== */
+const docKey = () => state.cargo + '|' + state.dir;
+function renderDocs() {
+  const ids = docIdsFor(state);
+  const done = docsDone[docKey()] || [];
+  const n = ids.filter(i => done.includes(i)).length;
+  const pct = ids.length ? Math.round(n / ids.length * 100) : 0;
+  const left = ids.filter(i => !done.includes(i));
+  const maxD = Math.max(0, ...left.map(i => DOCS[i].days));
+  const C = 2 * Math.PI * 42;
+  const list = ids.map(id => {
+    const d = DOCS[id], ck = done.includes(id);
+    return `<label class="doc ${ck ? 'done' : ''}"><input type="checkbox" data-doc="${id}" ${ck ? 'checked' : ''}><span class="ck"></span>
+      <div><b>${d.title}</b><small>📍 ${d.where}${d.days ? ' · ⏱ до ' + d.days + ' дн.' : ''}</small><p>${d.note}</p></div></label>`;
+  }).join('');
+  $('#tab-docs').innerHTML = `
+    <div class="head-row"><div><h2>📄 Чек-лист документов</h2><p>${CARGO[state.cargo].emoji} ${CARGO[state.cargo].name} · ${esc(DIRS[state.dir])}</p></div>
+    <div class="actions"><button class="btn line sm" data-act="checkall">Отметить всё</button><button class="btn line sm" data-act="uncheckall">Сбросить</button></div></div>
+    <div class="card"><div class="docs-top">
+      <svg class="ring" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="var(--line)" stroke-width="10"/>
+        <circle cx="50" cy="50" r="42" fill="none" stroke="url(#rg2)" stroke-width="10" stroke-linecap="round" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${(C * (1 - pct / 100)).toFixed(1)}" transform="rotate(-90 50 50)"/>
+        <defs><linearGradient id="rg2"><stop offset="0" stop-color="#06b6d4"/><stop offset="1" stop-color="#10b981"/></linearGradient></defs>
+        <text x="50" y="56" text-anchor="middle" font-size="20">${pct}%</text></svg>
+      <div><h3>Готово ${n} из ${ids.length}</h3>
+        <p style="color:var(--muted);margin:4px 0 0">${left.length ? 'Самый долгий из оставшихся документов оформляется до ' + maxD + ' дн. Начните с него.' : 'Все документы готовы — можно отправлять груз 🎉'}</p></div>
+    </div><div class="doc-list">${list}</div></div>`;
+}
+
+/* =====================================================================
+   ТРЕКЕР
+   ===================================================================== */
+const DEMO = [
+  { title: 'Одежда → Ташкент (1)',   dir: 'exp', city: 'tashkent',  cargo: 'clothes',     mode: 'ltl',     status: 'delivered', planCost: 140000, factCost: 162000, planDays: 4,   factDays: 6,   delayStage: 'border',   delayDays: 1.5, date: '2026-08-12', note: 'Не хватило одного сертификата' },
+  { title: 'Электроника → Самарканд', dir: 'exp', city: 'samarkand', cargo: 'electronics', mode: 'gazelle', status: 'delivered', planCost: 360000, factCost: 372000, planDays: 3.5, factDays: 4,   delayStage: 'docs',     delayDays: 0.5, date: '2026-09-03', note: '' },
+  { title: 'Косметика ← Ташкент',     dir: 'imp', city: 'tashkent',  cargo: 'cosmetics',   mode: 'ltl',     status: 'delivered', planCost: 95000,  factCost: 128000, planDays: 4,   factDays: 7,   delayStage: 'docs',     delayDays: 2.5, date: '2026-09-18', note: 'Ждали гигиеническое заключение' },
+  { title: 'Стройматериалы → Фергана', dir: 'exp', city: 'fergana',  cargo: 'building',    mode: 'truck',   status: 'delivered', planCost: 640000, factCost: 655000, planDays: 5,   factDays: 7,   delayStage: 'border',   delayDays: 2,   date: '2026-10-02', note: 'Очередь на границе' },
+  { title: 'Продукты → Ташкент',      dir: 'exp', city: 'tashkent',  cargo: 'food',        mode: 'gazelle', status: 'delivered', planCost: 210000, factCost: 245000, planDays: 3,   factDays: 4.5, delayStage: 'border',   delayDays: 1.5, date: '2026-10-15', note: '' },
+  { title: 'Мебель → Бухара',         dir: 'exp', city: 'bukhara',   cargo: 'furniture',   mode: 'truck',   status: 'delivered', planCost: 780000, factCost: 770000, planDays: 6,   factDays: 6,   delayStage: 'none',     delayDays: 0,   date: '2026-10-28', note: 'Всё прошло по плану' },
+  { title: 'Автозапчасти → Андижан',  dir: 'exp', city: 'andijan',   cargo: 'autoparts',   mode: 'ltl',     status: 'border',    planCost: 180000, factCost: 0,      planDays: 5,   factDays: 0,   delayStage: 'border',   delayDays: 1,   date: '2026-11-05', note: 'Стоим на границе', problem: true },
+  { title: 'Одежда → Ташкент (2)',    dir: 'exp', city: 'tashkent',  cargo: 'clothes',     mode: 'gazelle', status: 'transit',   planCost: 190000, factCost: 0,      planDays: 3,   factDays: 0,   delayStage: 'none',     delayDays: 0,   date: '2026-11-06', note: '' }
+];
+
+function saveShip() { store.set('bl_ship', ship); }
+
+function renderTrack() {
+  const filters = [{ id: 'all', name: 'Все' }, { id: 'problem', name: '🚨 Проблемные' }, ...STATUSES.map(s => ({ id: s.id, name: s.emoji + ' ' + s.name }))];
+  const list = ship.filter(s => ui.filter === 'all' || (ui.filter === 'problem' ? s.problem : s.status === ui.filter));
+  const cards = list.map(s => {
+    const si = STATUSES.findIndex(x => x.id === s.status);
+    const dC = s.factCost ? s.factCost - s.planCost : null;
+    const dD = s.factDays ? s.factDays - s.planDays : null;
+    return `<div class="card ship ${s.problem ? 'problem' : ''}" data-id="${s.id}">
+      <div><h3>${CARGO[s.cargo].emoji} ${esc(s.title)} ${s.problem ? '🚨' : ''}</h3>
+      <div class="sub">${MODES[s.mode].emoji} ${MODES[s.mode].short} · ${CITIES[s.city].name} · ${s.dir === 'exp' ? 'экспорт' : 'импорт'} · ${esc(s.date)}</div></div>
+      <div class="stepper">${STATUSES.map((st, i) => `<button class="${i < si ? 'done' : ''} ${i === si ? 'cur' : ''}" data-st="${st.id}" title="${st.name}">${st.emoji}</button>`).join('')}</div>
+      <div class="sub"><b>${STATUSES[si].name}</b></div>
+      <div class="nums">
+        <div><small>Стоимость: план → факт</small>${money(s.planCost)} → ${s.factCost ? money(s.factCost) : '—'}${dC !== null ? ` <span class="${dC > 0 ? 'over' : 'under'}">(${dC > 0 ? '+' : ''}${money(dC)})</span>` : ''}</div>
+        <div><small>Срок: план → факт</small>${fmt1(s.planDays)} → ${s.factDays ? fmt1(s.factDays) : '—'} дн.${dD !== null ? ` <span class="${dD > 0 ? 'over' : 'under'}">(${dD > 0 ? '+' : ''}${fmt1(dD)})</span>` : ''}</div>
+      </div>
+      ${s.delayStage && s.delayStage !== 'none' ? `<div class="note">⏳ Задержка на этапе «${STAGES.find(x => x.id === s.delayStage).name}»: ${fmt1(s.delayDays)} дн.</div>` : ''}
+      ${s.note ? `<div class="note">📝 ${esc(s.note)}</div>` : ''}
+      <div class="ship-actions"><button class="btn line sm" data-act="edit">✏️ Изменить</button><button class="btn danger sm" data-act="del">🗑</button></div>
+    </div>`;
+  }).join('');
+  $('#tab-track').innerHTML = `
+    <div class="head-row"><div><h2>📍 Мои поставки</h2><p>Нажимайте на иконки статуса, чтобы двигать поставку по этапам.</p></div>
+    <div class="actions"><button class="btn solid sm" data-act="newship">➕ Новая поставка</button><button class="btn line sm" data-act="csv">⬇️ CSV</button>${ship.length ? '<button class="btn line sm" data-act="clear">Очистить</button>' : ''}</div></div>
+    <div class="fseg" id="filterSeg" style="margin-bottom:6px">${filters.map(f => `<button data-filter="${f.id}" class="${ui.filter === f.id ? 'on' : ''}">${f.name}</button>`).join('')}</div>
+    ${ship.length ? `<div class="ships">${cards || '<div class="empty">Нет поставок с таким фильтром</div>'}</div>` :
+      `<div class="card empty"><div class="big">📭</div><h3>Пока нет поставок</h3><p>Добавьте первую вручную, сохраните расчёт из калькулятора или загрузите демо-данные, чтобы увидеть аналитику.</p>
+      <div class="actions" style="justify-content:center"><button class="btn solid" data-act="newship">➕ Добавить поставку</button><button class="btn line" data-act="demo">🎲 Загрузить демо-данные</button></div></div>`}`;
+}
+
+function optList(obj, sel, key = 'name') { return Object.keys(obj).map(k => `<option value="${k}" ${k === sel ? 'selected' : ''}>${obj[k].emoji ? obj[k].emoji + ' ' : ''}${obj[k][key]}</option>`).join(''); }
+
+function openShipDialog(id, prefill) {
+  const s = id ? ship.find(x => x.id === id) : Object.assign({
+    title: '', dir: state.dir, city: state.city, cargo: state.cargo, mode: state.mode, status: 'planned', problem: false,
+    planCost: 0, factCost: 0, planDays: 0, factDays: 0, delayStage: 'none', delayDays: 0, date: today(), note: ''
+  }, prefill || {});
+  const d = $('#shipDialog');
+  d.dataset.id = id || '';
+  d.innerHTML = `<form class="dlg" id="shipForm">
+    <h2>${id ? '✏️ Изменить поставку' : '➕ Новая поставка'}</h2>
+    <div class="grid">
+      <div class="full"><label class="lbl">Название</label><input type="text" id="f_title" required maxlength="80" value="${esc(s.title)}" placeholder="Например: Одежда → Ташкент"></div>
+      <div><label class="lbl">Направление</label><select id="f_dir"><option value="exp" ${s.dir === 'exp' ? 'selected' : ''}>Экспорт</option><option value="imp" ${s.dir === 'imp' ? 'selected' : ''}>Импорт</option></select></div>
+      <div><label class="lbl">Город</label><select id="f_city">${optList(CITIES, s.city)}</select></div>
+      <div><label class="lbl">Груз</label><select id="f_cargo">${optList(CARGO, s.cargo)}</select></div>
+      <div><label class="lbl">Способ</label><select id="f_mode">${optList(MODES, s.mode, 'short')}</select></div>
+      <div><label class="lbl">Статус</label><select id="f_status">${STATUSES.map(x => `<option value="${x.id}" ${x.id === s.status ? 'selected' : ''}>${x.emoji} ${x.name}</option>`).join('')}</select></div>
+      <div><label class="lbl">Дата</label><input type="date" id="f_date" value="${esc(s.date)}"></div>
+      <div><label class="lbl">План: стоимость, ₸</label><input type="number" id="f_planCost" min="0" value="${Math.round(s.planCost)}"></div>
+      <div><label class="lbl">Факт: стоимость, ₸</label><input type="number" id="f_factCost" min="0" value="${Math.round(s.factCost)}"></div>
+      <div><label class="lbl">План: дней</label><input type="number" id="f_planDays" min="0" step="0.1" value="${s.planDays}"></div>
+      <div><label class="lbl">Факт: дней</label><input type="number" id="f_factDays" min="0" step="0.1" value="${s.factDays}"></div>
+      <div><label class="lbl">Где была задержка</label><select id="f_delayStage"><option value="none">Без задержки</option>${STAGES.map(x => `<option value="${x.id}" ${x.id === s.delayStage ? 'selected' : ''}>${x.emoji} ${x.name}</option>`).join('')}</select></div>
+      <div><label class="lbl">Дней задержки</label><input type="number" id="f_delayDays" min="0" step="0.1" value="${s.delayDays}"></div>
+      <div class="full"><label class="lbl">Заметка</label><textarea id="f_note" rows="2" maxlength="300">${esc(s.note)}</textarea></div>
+    </div>
+    <label class="check"><input type="checkbox" id="f_problem" ${s.problem ? 'checked' : ''}> 🚨 Есть проблема с поставкой</label>
+    <div class="dlg-actions"><button type="button" class="btn line" id="dlgCancel">Отмена</button><button type="submit" class="btn solid">Сохранить</button></div>
+  </form>`;
+  d.showModal();
+}
+
+function readShipForm() {
+  const v = (id) => $('#' + id).value;
+  const n = (id) => Math.max(0, parseFloat(v(id)) || 0);
+  return {
+    title: v('f_title').trim() || 'Без названия', dir: v('f_dir'), city: v('f_city'), cargo: v('f_cargo'), mode: v('f_mode'),
+    status: v('f_status'), date: v('f_date') || today(), planCost: n('f_planCost'), factCost: n('f_factCost'),
+    planDays: n('f_planDays'), factDays: n('f_factDays'), delayStage: v('f_delayStage'), delayDays: n('f_delayDays'),
+    note: v('f_note').trim(), problem: $('#f_problem').checked
+  };
+}
+
+function exportCSV() {
+  const head = ['Название', 'Дата', 'Направление', 'Город', 'Груз', 'Способ', 'Статус', 'План ₸', 'Факт ₸', 'План дн', 'Факт дн', 'Этап задержки', 'Дней задержки', 'Проблема', 'Заметка'];
+  const q = (x) => '"' + String(x == null ? '' : x).replace(/"/g, '""') + '"';
+  const rows = ship.map(s => [s.title, s.date, s.dir === 'exp' ? 'экспорт' : 'импорт', CITIES[s.city].name, CARGO[s.cargo].name, MODES[s.mode].short,
+    STATUSES.find(x => x.id === s.status).name, s.planCost, s.factCost, s.planDays, s.factDays,
+    s.delayStage === 'none' ? '' : STAGES.find(x => x.id === s.delayStage).name, s.delayDays, s.problem ? 'да' : '', s.note].map(q).join(';'));
+  const blob = new Blob(['\ufeff' + [head.map(q).join(';'), ...rows].join('\n')], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'bridgelogix-shipments.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+  toast('Файл CSV сохранён');
+}
+
+/* =====================================================================
+   АНАЛИТИКА
+   ===================================================================== */
+function renderStats() {
+  if (!ship.length) {
+    $('#tab-stats').innerHTML = `<div class="card empty"><div class="big">📊</div><h3>Аналитика появится, когда будут данные</h3><p>Добавьте поставки в трекере или загрузите демо-данные.</p>
+      <div class="actions" style="justify-content:center"><button class="btn solid" data-act="demo">🎲 Загрузить демо-данные</button><button class="btn line" data-go="track">Перейти в трекер</button></div></div>`;
+    return;
+  }
+  const done = ship.filter(s => s.factCost > 0 || s.factDays > 0);
+  const totalFact = ship.reduce((a, s) => a + (s.factCost || 0), 0);
+  const withDays = ship.filter(s => s.factDays > 0 && s.planDays > 0);
+  const avgDelay = withDays.length ? withDays.reduce((a, s) => a + (s.factDays - s.planDays), 0) / withDays.length : 0;
+  const onTime = withDays.length ? Math.round(withDays.filter(s => s.factDays <= s.planDays + 0.5).length / withDays.length * 100) : 0;
+  const withCost = ship.filter(s => s.factCost > 0 && s.planCost > 0);
+  const err = withCost.length ? withCost.reduce((a, s) => a + Math.abs(s.factCost - s.planCost) / s.planCost * 100, 0) / withCost.length : 0;
+
+  const byStage = STAGES.map(st => ({ label: st.emoji + ' ' + st.name.split(' ')[0], full: st.name, id: st.id, color: st.color, value: ship.filter(s => s.delayStage === st.id).reduce((a, s) => a + (s.delayDays || 0), 0), count: ship.filter(s => s.delayStage === st.id).length }));
+  const worst = [...byStage].sort((a, b) => b.value - a.value)[0];
+  const maxC = Math.max(...withCost.map(s => Math.max(s.planCost, s.factCost)), 1);
+  const pf = withCost.slice(-8).map(s => `<div class="pf"><div><b>${esc(s.title)}</b> · ${money(s.planCost)} → ${money(s.factCost)}</div>
+      <div class="pf-b"><i class="plan" style="width:${(s.planCost / maxC * 100).toFixed(1)}%"></i><i class="fact ${s.factCost > s.planCost ? 'over' : ''}" style="width:${(s.factCost / maxC * 100).toFixed(1)}%"></i></div></div>`).join('');
+
+  $('#tab-stats').innerHTML = `
+    <div class="head-row"><div><h2>📊 Аналитика ваших поставок</h2><p>Где теряются деньги и время — по данным трекера.</p></div></div>
+    <div class="kpis3">
+      <div class="stat"><small>Поставок всего</small><b>${ship.length}</b><span>завершено: ${done.length}</span></div>
+      <div class="stat"><small>Потрачено фактически</small><b>${money(totalFact)}</b></div>
+      <div class="stat"><small>Средняя задержка</small><b>${avgDelay >= 0 ? '+' : ''}${fmt1(avgDelay)} дн.</b><span>вовремя: ${onTime}%</span></div>
+      <div class="stat"><small>Ошибка прогноза цены</small><b>${Math.round(err)}%</b><span>среднее отклонение</span></div>
+    </div>
+    <div class="charts2">
+      <div class="card"><h3>⏳ Дни задержек по этапам</h3>${hbars(byStage.map(b => ({ label: b.label, value: b.value, color: b.color })), v => fmt1(v) + ' дн.')}</div>
+      <div class="card"><h3>💰 План и факт по стоимости</h3>${pf || '<p style="color:var(--muted)">Нет завершённых поставок со стоимостью.</p>'}
+        <div class="lg"><span><i style="background:#94a3b8"></i>План</span><span><i style="background:var(--p)"></i>Факт</span><span><i style="background:var(--bad)"></i>Перерасход</span></div></div>
+    </div>
+    ${worst && worst.value > 0 ? `<div class="insight"><b>💡 Вывод:</b> больше всего времени теряется на этапе «${worst.full}» — ${fmt1(worst.value)} дн. в ${worst.count} поставках. ${STAGE_ADVICE[worst.id]}</div>` : ''}`;
+}
+
+/* =====================================================================
+   ТАРИФЫ
+   ===================================================================== */
+function field(scope, k, label, val, unit) {
+  return `<label class="fld"><span>${label}</span><div><input type="number" step="any" value="${val}" data-s="${scope}" data-k2="${k}"><em>${unit}</em></div></label>`;
+}
+function renderTariffs() {
+  const globals = GLOBAL_FIELDS.map(f => field('g', f.k, f.label, S[f.k], f.unit)).join('');
+  const modes = Object.keys(MODES).map(mk => `<div class="card"><h3>${MODES[mk].emoji} ${MODES[mk].name}</h3>${MODE_FIELDS[MODES[mk].type].map(f => field('m:' + mk, f.k, f.label, S.modes[mk][f.k], f.unit)).join('')}</div>`).join('');
+  const duty = Object.keys(CARGO).map(k => field('d', k, CARGO[k].emoji + ' ' + CARGO[k].name, S.duty[k], '%')).join('');
+  $('#tab-tariffs').innerHTML = `
+    <div class="head-row"><div><h2>⚙️ Тарифы и параметры модели</h2><p>Подставьте реальные цены из интервью с перевозчиками — расчёты обновятся сразу.</p></div>
+    <button class="btn line sm" data-act="resetSettings">↺ Сбросить к демо-данным</button></div>
+    <div class="card"><label class="lbl" style="margin-top:0">Источник и дата данных (показывается в расчёте)</label>
+      <textarea id="srcNote" rows="2" maxlength="200">${esc(S.sourceNote)}</textarea></div>
+    <div class="tgrid">
+      <div class="card"><h3>🌐 Общие параметры</h3>${globals}</div>
+      ${modes}
+      <div class="card"><h3>🛃 Ориентировочная пошлина</h3>${duty}</div>
+    </div>`;
+}
+
+/* =====================================================================
+   НАВИГАЦИЯ И ОБЩИЕ ДЕЙСТВИЯ
+   ===================================================================== */
+const RENDER = { calc: renderCalc, compare: renderCompare, docs: renderDocs, track: renderTrack, stats: renderStats, tariffs: renderTariffs };
+
+function showTab(name, scroll) {
+  if (!TABS.includes(name)) name = 'calc';
+  ui.tab = name;
+  $$('.tab').forEach(t => t.classList.toggle('on', t.id === 'tab-' + name));
+  $$('#nav button').forEach(b => b.classList.toggle('on', b.dataset.tab === name));
+  RENDER[name]();
+  try { history.replaceState(null, '', '#' + name); } catch (e) { /* file:// */ }
+  if (scroll) window.scrollTo({ top: ($('main') ? $('main').offsetTop : 0) - 70, behavior: 'smooth' });
+}
+
+function updateAll(sync) {
+  persist();
+  if (sync) syncForm();
+  renderCalc();
+  if (ui.tab !== 'calc' && ui.tab !== 'tariffs') RENDER[ui.tab]();
+}
+
+function currentPlan() {
+  const r = calcShipment(state, S);
+  return { r, prefill: {
+    title: CARGO[state.cargo].name + (state.dir === 'exp' ? ' → ' : ' ← ') + CITIES[state.city].name,
+    planCost: Math.round(r.total), planDays: Math.round(r.expDays * 10) / 10
+  } };
+}
+
+function shareLink() {
+  const enc = btoa(unescape(encodeURIComponent(JSON.stringify(state))));
+  return location.href.split(/[?#]/)[0] + '?s=' + encodeURIComponent(enc) + '#calc';
+}
+
+function applyTheme() {
+  const t = document.documentElement.dataset.theme || 'light';
+  const b = $('#themeBtn'); if (b) b.textContent = t === 'dark' ? '☀️' : '🌙';
+  const c = $('#curBtn'); if (c) c.textContent = ui.cur === 'USD' ? '$' : '₸';
+}
+
+function handleAction(act, target) {
+  const card = target.closest('[data-id]');
+  const id = card ? card.dataset.id : null;
+  switch (act) {
+    case 'save': { const p = currentPlan(); openShipDialog(null, p.prefill); showTabSilent('track'); break; }
+    case 'docs': showTab('docs', true); break;
+    case 'copy': copyText(reportText(state, S, calcShipment(state, S), money)); break;
+    case 'share': copyText(shareLink()); toast('Ссылка на расчёт скопирована 🔗'); break;
+    case 'print': window.print(); break;
+    case 'checkall': docsDone[docKey()] = docIdsFor(state); store.set('bl_docs', docsDone); renderDocs(); break;
+    case 'uncheckall': docsDone[docKey()] = []; store.set('bl_docs', docsDone); renderDocs(); break;
+    case 'newship': openShipDialog(null, null); break;
+    case 'edit': openShipDialog(id, null); break;
+    case 'del': if (confirm('Удалить эту поставку?')) { ship = ship.filter(s => s.id !== id); saveShip(); renderTrack(); toast('Удалено'); } break;
+    case 'clear': if (confirm('Удалить все поставки?')) { ship = []; saveShip(); renderTrack(); } break;
+    case 'csv': exportCSV(); break;
+    case 'demo': ship = DEMO.map(d => Object.assign({ id: uid(), problem: false }, d)); saveShip(); toast('Демо-данные загружены 🎲'); RENDER[ui.tab](); break;
+    case 'resetSettings': S = mergeSettings(null); store.set('bl_settings', S); renderTariffs(); updateAll(true); toast('Тарифы сброшены'); break;
+    default: break;
+  }
+}
+function showTabSilent(name) { showTab(name, true); }
+
+/* ---------- события ---------- */
+function bind() {
+  document.addEventListener('click', (e) => {
+    const t = e.target;
+    const tab = t.closest('[data-tab]'); if (tab) { showTab(tab.dataset.tab, true); return; }
+    const go = t.closest('[data-go]'); if (go) { e.preventDefault(); showTab(go.dataset.go, true); return; }
+    const dir = t.closest('[data-dir]'); if (dir) { state.dir = dir.dataset.dir; updateAll(true); return; }
+    const cg = t.closest('[data-cargo]'); if (cg) { state.cargo = cg.dataset.cargo; updateAll(true); return; }
+    const md = t.closest('[data-mode]');
+    if (md) { state.mode = md.dataset.mode; updateAll(true); if (md.dataset.jump) { toast('Способ выбран: ' + MODES[state.mode].name); } return; }
+    const pr = t.closest('[data-preset]');
+    if (pr) { const [w, v] = pr.dataset.preset.split(',').map(Number); state.weight = w; state.volume = v; updateAll(true); return; }
+    const pz = t.closest('[data-prio]'); if (pz) { state.priority = pz.dataset.prio; updateAll(false); return; }
+    const fl = t.closest('[data-filter]'); if (fl) { ui.filter = fl.dataset.filter; renderTrack(); return; }
+    const st = t.closest('.stepper [data-st]');
+    if (st) {
+      const card = st.closest('[data-id]'); const s = ship.find(x => x.id === card.dataset.id);
+      if (s) { s.status = st.dataset.st; saveShip(); renderTrack(); toast('Статус: ' + STATUSES.find(x => x.id === s.status).name); }
+      return;
+    }
+    const act = t.closest('[data-act]'); if (act) { handleAction(act.dataset.act, act); return; }
+    if (t.id === 'dlgCancel') { $('#shipDialog').close(); return; }
+    if (t.id === 'themeBtn') {
+      const nt = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = nt; store.set('bl_theme', nt); applyTheme(); return;
+    }
+    if (t.id === 'curBtn') { ui.cur = ui.cur === 'KZT' ? 'USD' : 'KZT'; store.set('bl_cur', ui.cur); applyTheme(); updateAll(false); }
+  });
+
+  document.addEventListener('input', (e) => {
+    const t = e.target;
+    if (t.dataset && t.dataset.k) {
+      const k = t.dataset.k;
+      if (t.type === 'checkbox') state[k] = t.checked;
+      else if (t.type === 'number') state[k] = Math.max(0, parseFloat(t.value) || 0);
+      else state[k] = t.value;
+      persist(); renderCalc();
+      if (ui.tab !== 'calc') RENDER[ui.tab]();
+      return;
+    }
+    if (t.dataset && t.dataset.s) {
+      const sc = t.dataset.s, k = t.dataset.k2, v = parseFloat(t.value) || 0;
+      if (sc === 'g') S[k] = v; else if (sc === 'd') S.duty[k] = v; else if (sc.indexOf('m:') === 0) S.modes[sc.slice(2)][k] = v;
+      store.set('bl_settings', S); renderCalc(); return;
+    }
+    if (t.id === 'srcNote') { S.sourceNote = t.value; store.set('bl_settings', S); renderCalc(); }
+  });
+
+  document.addEventListener('change', (e) => {
+    const t = e.target;
+    if (t.dataset && t.dataset.doc) {
+      const key = docKey(); const arr = docsDone[key] || [];
+      docsDone[key] = t.checked ? [...new Set([...arr, t.dataset.doc])] : arr.filter(x => x !== t.dataset.doc);
+      store.set('bl_docs', docsDone); renderDocs();
+    }
+  });
+
+  document.addEventListener('submit', (e) => {
+    if (e.target.id !== 'shipForm') return;
+    e.preventDefault();
+    const d = $('#shipDialog'); const data = readShipForm(); const id = d.dataset.id;
+    if (id) { const s = ship.find(x => x.id === id); if (s) Object.assign(s, data); }
+    else ship.unshift(Object.assign({ id: uid() }, data));
+    saveShip(); d.close(); renderTrack(); toast('Сохранено ✅');
+  });
+
+  document.addEventListener('toggle', (e) => {
+    const t = e.target;
+    if (t && t.dataset && t.dataset.stage) { if (t.open) ui.open.add(t.dataset.stage); else ui.open.delete(t.dataset.stage); }
+  }, true);
+
+  window.addEventListener('hashchange', () => { const h = location.hash.slice(1); if (TABS.includes(h) && h !== ui.tab) showTab(h, false); });
+}
+
+/* ---------- запуск ---------- */
+function init() {
+  try {
+    const p = new URLSearchParams(location.search).get('s');
+    if (p) Object.assign(state, JSON.parse(decodeURIComponent(escape(atob(p)))));
+  } catch (e) { /* неверная ссылка — игнорируем */ }
+  if (!CITIES[state.city]) state.city = DEFAULT_STATE.city;
+  if (!CARGO[state.cargo]) state.cargo = DEFAULT_STATE.cargo;
+  if (!MODES[state.mode]) state.mode = DEFAULT_STATE.mode;
+  buildForm(); bind(); applyTheme(); syncForm();
+  const h = (location.hash || '').slice(1);
+  showTab(TABS.includes(h) ? h : 'calc', false);
+  if (ui.tab !== 'calc') renderCalc();
+}
+init();
+
+</script>
+</body>
+</html>
