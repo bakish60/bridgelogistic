@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>BridgeLogix — логистика Шымкент ↔ Узбекистан</title>
-  <meta name="description" content="Рассчитайте стоимость, срок и риски перевозки между Шымкентом и Узбекистаном, получите чек-лист документов и ведите поставки в одном месте.">
+  <meta name="description" content="Рассчитайте стоимость, срок и риски перевозки между Шымкентом и Узбекистаном, свяжитесь с перевозчиками и ведите поставки в личном кабинете.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
+<style>
 /* =====================================================================
    BridgeLogix — стили (светлая и тёмная темы, адаптивно)
    ===================================================================== */
@@ -326,24 +326,238 @@ footer { text-align: center; padding: 20px 18px 40px; color: var(--muted); font-
 }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 
+/* =====================================================================
+   BridgeLogix — modern.css: современный слой поверх style.css
+   (стекло, aurora-фон, аккаунты, каталог, чат, мобильная панель)
+   ===================================================================== */
+:root {
+  --bg: #f4f3ff; --card: rgba(255, 255, 255, .8); --card2: rgba(243, 241, 255, .85);
+  --line: rgba(110, 100, 200, .18); --p: #6d5dfc; --p2: #a855f7;
+  --grad: linear-gradient(135deg, #6d5dfc 0%, #a855f7 50%, #ec4899 100%);
+  --shadow: 0 12px 34px rgba(80, 70, 190, .13);
+  --r: 20px;
+}
+[data-theme="dark"] {
+  --bg: #080a1f; --card: rgba(22, 27, 66, .78); --card2: rgba(32, 38, 88, .75);
+  --line: rgba(150, 160, 255, .16); --shadow: 0 12px 34px rgba(0, 0, 0, .5);
+}
+body::before { display: none; }
+.card, .stat, .cmp-card, dialog { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+.card { transition: transform .25s, box-shadow .25s; }
+.card:hover { box-shadow: 0 18px 44px rgba(80, 70, 190, .18); }
+::selection { background: rgba(109, 93, 252, .3); }
+:focus-visible { outline: 3px solid rgba(109, 93, 252, .55); outline-offset: 2px; }
+
+/* aurora-фон */
+.aurora { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+.aurora i { position: absolute; border-radius: 50%; filter: blur(80px); opacity: .5; animation: drift 22s ease-in-out infinite alternate; }
+.aurora i:nth-child(1) { width: 520px; height: 520px; background: #6d5dfc; left: -120px; top: -140px; }
+.aurora i:nth-child(2) { width: 460px; height: 460px; background: #ec4899; right: -140px; top: 18%; animation-delay: -7s; opacity: .35; }
+.aurora i:nth-child(3) { width: 520px; height: 520px; background: #06b6d4; left: 30%; bottom: -220px; animation-delay: -13s; opacity: .35; }
+[data-theme="dark"] .aurora i { opacity: .28; }
+@keyframes drift { to { transform: translate(60px, 40px) scale(1.15); } }
+
+/* шапка */
+.top { gap: 10px; }
+.tools { display: flex; align-items: center; gap: 8px; }
+.userbtn { display: flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 4px 14px 4px 5px; font-weight: 700; box-shadow: var(--shadow); white-space: nowrap; }
+.userbtn:hover { transform: translateY(-1px); }
+.userbtn > span:first-child:not(.av) { width: 28px; height: 28px; display: grid; place-items: center; }
+.chat-badge, .nb { display: inline-grid; place-items: center; min-width: 19px; height: 19px; padding: 0 5px; margin-left: 6px; border-radius: 99px; background: #ef4444; color: #fff; font-size: .7rem; font-style: normal; font-weight: 800; }
+.chat-badge[hidden] { display: none; }
+.linkbtn { border: 0; background: none; color: var(--p); font-weight: 700; text-decoration: underline; padding: 0; }
+
+/* аватары */
+.av { display: inline-grid; place-items: center; flex: none; border-radius: 50%; color: #fff; font-weight: 800; width: 40px; height: 40px; font-size: .9rem; box-shadow: 0 6px 14px rgba(0, 0, 0, .18); }
+.av.sm { width: 28px; height: 28px; font-size: .7rem; }
+.av.md { width: 42px; height: 42px; }
+.av.lg { width: 52px; height: 52px; font-size: 1.05rem; }
+.av.xl { width: 84px; height: 84px; font-size: 1.8rem; }
+
+/* теги и общие */
+.tag { display: inline-block; font-size: .72rem; font-weight: 700; padding: 3px 10px; border-radius: 99px; background: color-mix(in srgb, var(--p) 15%, transparent); color: var(--p); }
+.tag-demo { background: rgba(245, 158, 11, .16); color: #b45309; }
+.tag-live { background: rgba(16, 185, 129, .16); color: #047857; }
+.tag-ver { background: rgba(16, 185, 129, .18); color: #047857; }
+[data-theme="dark"] .tag-demo { color: #fbbf24; } [data-theme="dark"] .tag-live, [data-theme="dark"] .tag-ver { color: #6ee7b7; }
+.muted { color: var(--muted); font-size: .88rem; }
+.center { text-align: center; } .pad { padding: 16px; }
+.wide { width: 100%; margin-top: 12px; }
+.err { color: var(--bad); font-weight: 700; font-size: .85rem; min-height: 1.2em; margin-top: 8px; }
+.hint { color: var(--muted); font-size: .76rem; text-align: center; margin: 10px 0 0; }
+.search { width: 100%; padding: 13px 16px; border-radius: 14px; border: 1.5px solid var(--line); background: var(--card); outline: none; }
+.search:focus { border-color: var(--p); box-shadow: 0 0 0 4px rgba(109, 93, 252, .15); }
+
+/* модальные окна */
+dialog { border: 0; border-radius: 24px; padding: 0; background: var(--card); color: var(--text); max-width: 94vw; }
+#modal { width: min(560px, 94vw); }
+#modal:has(.auth) { width: min(880px, 94vw); }
+dialog[open] { animation: dlg .25s ease; }
+@keyframes dlg { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
+
+/* вход */
+.auth { display: grid; grid-template-columns: 1fr 1.1fr; }
+.auth-art { background: var(--grad); color: #fff; padding: 34px 28px; display: flex; flex-direction: column; gap: 10px; }
+.auth-art h3 { font-size: 1.5rem; margin: 6px 0 0; }
+.auth-art p { margin: 0; opacity: .92; }
+.auth-art ul { list-style: none; padding: 0; margin: 14px 0 0; display: grid; gap: 10px; font-weight: 600; font-size: .92rem; }
+.logo.big { width: 56px; height: 56px; font-size: 1.8rem; background: rgba(255, 255, 255, .25); }
+.auth-form { padding: 26px 26px 22px; position: relative; max-height: 88vh; overflow-y: auto; }
+.auth-form .x { position: absolute; right: 14px; top: 12px; border: 0; background: var(--card2); width: 32px; height: 32px; border-radius: 50%; }
+.auth-form .seg { margin-right: 40px; }
+.roles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.role input { display: none; }
+.role > span { display: grid; gap: 2px; padding: 10px; border: 1.5px solid var(--line); border-radius: 14px; background: var(--card2); cursor: pointer; font-size: 1.4rem; transition: .2s; }
+.role b { font-size: .84rem; } .role small { font-size: .72rem; color: var(--muted); }
+.role input:checked + span { border-color: var(--p); background: color-mix(in srgb, var(--p) 14%, transparent); }
+.pw { position: relative; }
+.pw input { padding-right: 46px; }
+.eye { position: absolute; right: 6px; top: 6px; border: 0; background: transparent; width: 34px; height: 34px; border-radius: 10px; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.carrier-only[hidden] { display: none; }
+
+/* проверка «я человек» */
+.human { margin-top: 14px; padding: 12px; border-radius: 14px; background: var(--card2); border: 1.5px dashed var(--p); }
+.human.ok { border: 1.5px solid var(--ok); color: #047857; font-weight: 700; background: rgba(16, 185, 129, .1); }
+[data-theme="dark"] .human.ok { color: #6ee7b7; }
+.h-q { margin-bottom: 10px; font-size: .92rem; }
+.h-opts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.h-opt { border: 1.5px solid var(--line); background: var(--card); border-radius: 12px; padding: 10px 0; font-size: 1.3rem; font-weight: 800; transition: .15s; }
+.h-opt:hover { border-color: var(--p); transform: translateY(-2px); }
+.h-hint { font-size: .72rem; color: var(--muted); margin-top: 8px; }
+
+/* кабинет */
+.cab-banner { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; padding: 24px; border-radius: 24px; color: #fff; background: var(--grad); box-shadow: 0 20px 44px rgba(109, 93, 252, .3); margin-bottom: 18px; }
+.cab-banner .av { box-shadow: 0 0 0 4px rgba(255, 255, 255, .35); }
+.cb-info { flex: 1; min-width: 220px; }
+.cb-info h2 { font-size: 1.6rem; }
+.cb-info p { margin: 8px 0 0; opacity: .92; }
+.cb-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.cab-banner .tag { background: rgba(255, 255, 255, .22); color: #fff; }
+.cab-banner .btn.line { background: rgba(255, 255, 255, .2); color: #fff; border-color: rgba(255, 255, 255, .4); }
+.li { display: flex; justify-content: space-between; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.li:last-child { border-bottom: 0; }
+.li b { display: block; font-size: .9rem; } .li small { color: var(--muted); font-size: .78rem; }
+.li-a { display: flex; gap: 6px; flex: none; }
+.hero-lite { text-align: center; max-width: 620px; margin: 10px auto; padding: 36px 24px; }
+.big-ico { font-size: 3.2rem; }
+.hero-lite p { color: var(--muted); }
+.perks { list-style: none; padding: 0; margin: 20px 0 0; display: grid; gap: 8px; text-align: left; font-weight: 600; font-size: .9rem; }
+.perks li { background: var(--card2); border-radius: 12px; padding: 10px 14px; }
+
+/* каталог */
+.carriers { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+.carrier { display: grid; gap: 10px; align-content: start; }
+.carrier:hover { transform: translateY(-4px); }
+.c-head { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.c-head h3 { margin: 0; font-size: 1rem; } .c-head small { color: var(--muted); }
+.c-head .tag { margin-left: auto; }
+.c-svc { display: flex; gap: 6px; flex-wrap: wrap; }
+.c-row { font-size: .86rem; font-weight: 600; }
+.carrier p { margin: 0; }
+.carrier .actions a { text-decoration: none; display: inline-block; }
+
+/* заявка */
+.quote { display: grid; gap: 3px; padding: 12px; border-radius: 14px; background: color-mix(in srgb, var(--p) 10%, var(--card)); border: 1px solid var(--line); font-size: .82rem; margin: 6px 0; }
+.quote b { font-size: .9rem; }
+.q-row { display: flex; justify-content: space-between; margin: 4px 0; font-weight: 800; font-style: normal; color: var(--p); }
+.q-row em { font-style: normal; }
+.pick { display: grid; gap: 6px; max-height: 200px; overflow-y: auto; }
+.pick-i { display: flex; gap: 10px; align-items: center; padding: 8px 10px; border: 1.5px solid var(--line); border-radius: 12px; cursor: pointer; background: var(--card2); }
+.pick-i input { accent-color: var(--p); }
+.pick-i small { display: block; color: var(--muted); font-size: .74rem; }
+.pick-i:has(input:checked) { border-color: var(--p); background: color-mix(in srgb, var(--p) 12%, transparent); }
+.svc-pick { display: flex; flex-wrap: wrap; gap: 6px; }
+.svc-pick .chip { padding: 7px 12px; }
+
+/* чат */
+.chat { display: grid; grid-template-columns: 300px 1fr; height: min(640px, 72vh); border-radius: 22px; overflow: hidden; border: 1px solid var(--line); background: var(--card); box-shadow: var(--shadow); }
+.threads { border-right: 1px solid var(--line); overflow-y: auto; }
+.th { display: flex; gap: 10px; align-items: center; width: 100%; text-align: left; padding: 12px 14px; border: 0; background: transparent; border-bottom: 1px solid var(--line); }
+.th:hover { background: var(--card2); } .th.on { background: color-mix(in srgb, var(--p) 14%, transparent); }
+.th-t { flex: 1; min-width: 0; display: grid; }
+.th-t b { font-size: .9rem; }
+.th-t small { color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pane { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+.pane > .empty { margin: auto; }
+.pane-h { display: flex; gap: 10px; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+.pane-h small { display: block; color: var(--muted); }
+.back { display: none; border: 0; background: var(--card2); border-radius: 10px; width: 34px; height: 34px; font-size: 1.1rem; }
+.msgs { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.msg { display: flex; } .msg.me { justify-content: flex-end; }
+.bub { max-width: min(78%, 460px); padding: 10px 14px 6px; border-radius: 18px; background: var(--card2); overflow-wrap: anywhere; font-size: .92rem; }
+.msg.me .bub { background: var(--grad); color: #fff; border-bottom-right-radius: 6px; }
+.msg.them .bub { border-bottom-left-radius: 6px; }
+.msg.me .quote { background: rgba(255, 255, 255, .2); color: #fff; border-color: rgba(255, 255, 255, .3); }
+.msg.me .q-row { color: #fff; }
+.bub time { display: block; font-size: .66rem; opacity: .65; margin-top: 3px; text-align: right; }
+.auto { display: block; opacity: .6; font-size: .68rem; margin-bottom: 2px; }
+.composer { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--line); align-items: flex-end; }
+.composer textarea { flex: 1; resize: none; padding: 11px 14px; border-radius: 16px; border: 1.5px solid var(--line); background: var(--card2); outline: none; max-height: 120px; }
+.composer textarea:focus { border-color: var(--p); }
+.composer .btn { padding: 11px 18px; }
+
+/* палитра команд */
+#palette { width: min(560px, 94vw); margin-top: 12vh; }
+#palette::backdrop { background: rgba(10, 13, 34, .55); backdrop-filter: blur(4px); }
+#palInput { width: 100%; border: 0; border-bottom: 1px solid var(--line); background: transparent; padding: 18px 20px; font-size: 1.05rem; outline: none; border-radius: 0; }
+#palList { list-style: none; margin: 0; padding: 8px; max-height: 50vh; overflow-y: auto; }
+#palList li { padding: 11px 14px; border-radius: 12px; cursor: pointer; font-weight: 600; }
+#palList li.on, #palList li:hover { background: var(--grad); color: #fff; }
+
+/* конфетти */
+.cf { position: fixed; top: -10px; width: 9px; height: 14px; border-radius: 2px; z-index: 200; pointer-events: none; animation: fall 1.9s ease-in forwards; }
+@keyframes fall { to { transform: translate(var(--dx), 105vh) rotate(720deg); opacity: .8; } }
+
+/* мобильная нижняя панель */
+.bnav { display: none; }
+@media (max-width: 820px) {
+  .bnav { display: grid; grid-template-columns: repeat(5, 1fr); position: fixed; left: 10px; right: 10px; bottom: 10px; z-index: 60; padding: 6px; border-radius: 22px; background: var(--card); border: 1px solid var(--line); box-shadow: 0 14px 40px rgba(0, 0, 0, .25); backdrop-filter: blur(18px); }
+  .bnav button { position: relative; display: grid; justify-items: center; gap: 1px; padding: 7px 0; border: 0; background: transparent; border-radius: 16px; font-size: 1.2rem; color: var(--muted); }
+  .bnav button span { font-size: .64rem; font-weight: 700; }
+  .bnav button.on { background: var(--grad); color: #fff; }
+  .bnav .chat-badge { position: absolute; top: 2px; right: 14%; margin: 0; }
+  body { padding-bottom: 92px; }
+  #toast { bottom: 100px; }
+  .auth { grid-template-columns: 1fr; } .auth-art { display: none; }
+  .userbtn .un { display: none; } .userbtn { padding: 4px; }
+  .chat { grid-template-columns: 1fr; height: 72vh; }
+  .chat .pane { display: none; }
+  .chat.open .threads { display: none; } .chat.open .pane { display: flex; }
+  .back { display: inline-grid; place-items: center; }
+}
+@media (max-width: 560px) { .roles { grid-template-columns: 1fr; } .carriers { grid-template-columns: 1fr; } }
+@media print { .aurora, .bnav { display: none !important; } }
+
+/* единый вид полей, включая пароль */
+input[type=password], input[type=email], input[type=search] { width: 100%; padding: 11px 13px; border-radius: 12px; border: 1.5px solid var(--line); background: var(--card2); outline: none; transition: .2s; }
+input[type=password]:focus { border-color: var(--p); box-shadow: 0 0 0 4px rgba(109, 93, 252, .15); }
+.pw { display: block; }
+.eye { top: 50%; transform: translateY(-50%); }
+
 </style>
   <script>try { var t = JSON.parse(localStorage.getItem('bl_theme')); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
 </head>
 <body>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
 
 <header class="top">
   <a class="brand" href="#calc" data-go="calc"><span class="logo">🌉</span><b>Bridge<span>Logix</span></b></a>
   <nav class="nav" id="nav">
     <button data-tab="calc" class="on">🧮 Калькулятор</button>
     <button data-tab="compare">⚖️ Сравнение</button>
+    <button data-tab="carriers">🤝 Перевозчики</button>
+    <button data-tab="chat">💬 Сообщения<i class="chat-badge" hidden>0</i></button>
     <button data-tab="docs">📄 Документы</button>
     <button data-tab="track">📍 Трекер</button>
     <button data-tab="stats">📊 Аналитика</button>
     <button data-tab="tariffs">⚙️ Тарифы</button>
   </nav>
   <div class="tools">
-    <button class="icon" id="curBtn" title="Сменить валюту">₸</button>
-    <button class="icon" id="themeBtn" title="Тема">🌙</button>
+    <button class="icon" data-sa="cmd" title="Быстрые команды (Ctrl+K)" aria-label="Быстрые команды">⌘</button>
+    <button class="icon" id="curBtn" title="Сменить валюту" aria-label="Сменить валюту">₸</button>
+    <button class="icon" id="themeBtn" title="Тема" aria-label="Сменить тему">🌙</button>
+    <button class="userbtn" id="userBtn" data-sa="login"><span>🔑</span><span class="un">Войти</span></button>
   </div>
 </header>
 
@@ -351,10 +565,10 @@ footer { text-align: center; padding: 20px 18px 40px; color: var(--muted); font-
   <div class="hero-text">
     <span class="badge">🇰🇿 Шымкент ⇄ Узбекистан 🇺🇿</span>
     <h1>Узнайте цену, срок и риски перевозки <em>до отправки груза</em></h1>
-    <p>Для небольших предпринимателей: честный расчёт по этапам, чек-лист документов и трекер поставок. Больше никаких сюрпризов на границе.</p>
+    <p>Для небольших предпринимателей: честный расчёт по этапам, чек-лист документов, личный кабинет и прямая связь с перевозчиками.</p>
     <div class="hero-cta">
       <button class="btn primary" data-go="calc">Рассчитать перевозку</button>
-      <button class="btn ghost" data-go="track">Мои поставки</button>
+      <button class="btn ghost" data-go="carriers">Найти перевозчика</button>
     </div>
     <div class="hero-stats">
       <div><b>5</b><span>способов перевозки</span></div>
@@ -364,10 +578,8 @@ footer { text-align: center; padding: 20px 18px 40px; color: var(--muted); font-
   </div>
   <div class="hero-art" aria-hidden="true">
     <svg viewBox="0 0 420 260">
-      <defs>
-        <linearGradient id="rg" x1="0" x2="1"><stop offset="0" stop-color="#06b6d4"/><stop offset="1" stop-color="#ec4899"/></linearGradient>
-      </defs>
-      <path id="routePath" d="M50 200 C 120 60, 200 240, 250 120 S 350 60, 375 70" fill="none" stroke="url(#rg)" stroke-width="6" stroke-linecap="round" stroke-dasharray="2 14"/>
+      <defs><linearGradient id="rg" x1="0" x2="1"><stop offset="0" stop-color="#67e8f9"/><stop offset="1" stop-color="#f9a8d4"/></linearGradient></defs>
+      <path d="M50 200 C 120 60, 200 240, 250 120 S 350 60, 375 70" fill="none" stroke="url(#rg)" stroke-width="6" stroke-linecap="round" stroke-dasharray="2 14"/>
       <circle cx="50" cy="200" r="14" fill="#06b6d4"/><circle cx="375" cy="70" r="14" fill="#ec4899"/>
       <text x="50" y="236" text-anchor="middle" class="svgt">Шымкент</text>
       <text x="375" y="110" text-anchor="middle" class="svgt">Ташкент</text>
@@ -381,7 +593,6 @@ footer { text-align: center; padding: 20px 18px 40px; color: var(--muted); font-
 </section>
 
 <main>
-  <!-- КАЛЬКУЛЯТОР -->
   <section id="tab-calc" class="tab on">
     <div class="grid-calc">
       <aside class="card form">
@@ -430,20 +641,289 @@ footer { text-align: center; padding: 20px 18px 40px; color: var(--muted); font-
   </section>
 
   <section id="tab-compare" class="tab"></section>
+  <section id="tab-carriers" class="tab"></section>
+  <section id="tab-chat" class="tab"></section>
   <section id="tab-docs" class="tab"></section>
   <section id="tab-track" class="tab"></section>
   <section id="tab-stats" class="tab"></section>
+  <section id="tab-cabinet" class="tab"></section>
   <section id="tab-tariffs" class="tab"></section>
 </main>
 
+<nav class="bnav" id="bnav" aria-label="Основная навигация">
+  <button data-tab="calc" class="on">🧮<span>Расчёт</span></button>
+  <button data-tab="carriers">🤝<span>Каталог</span></button>
+  <button data-tab="chat">💬<span>Чат</span><i class="chat-badge" hidden>0</i></button>
+  <button data-tab="track">📍<span>Трекер</span></button>
+  <button data-tab="cabinet">👤<span>Кабинет</span></button>
+</nav>
+
 <dialog id="shipDialog"></dialog>
+<dialog id="modal"></dialog>
+<dialog id="palette">
+  <input id="palInput" type="text" placeholder="Что сделать? Например: чат, тема, сохранить…" autocomplete="off" aria-label="Быстрые команды">
+  <ul id="palList"></ul>
+</dialog>
 <div id="toast" role="status" aria-live="polite"></div>
 
 <footer>
   <p>BridgeLogix · учебный MVP для хакатона. Тарифы, сроки и вероятности — ориентировочные: перед отправкой уточняйте у перевозчика и таможенного брокера.</p>
+  <p><button class="linkbtn" data-sa="contact">🛟 Связаться с командой</button> · <button class="linkbtn" data-sa="cmd">⌘ Быстрые команды (Ctrl+K)</button></p>
 </footer>
 
 <script>
+/* =====================================================================
+   BridgeLogix — ПЛАТФОРМА: аккаунты, каталог, чат
+   ---------------------------------------------------------------------
+   ВАЖНО (демо-режим): данные хранятся в localStorage этого браузера.
+   Два аккаунта на одном устройстве (например, в двух вкладках) могут
+   реально переписываться друг с другом. Чтобы аккаунты и чат работали
+   между разными устройствами, замените слой DB / Auth / Chat на запросы
+   к серверу (Supabase, Firebase и т. п.) — интерфейс менять не придётся.
+   ===================================================================== */
+'use strict';
+
+/* ---------- Настройки связи с командой ----------
+   Заполните свои реальные контакты — кнопки появятся в окне «Помощь».
+   Оставьте пустыми, если канал не нужен. */
+const SUPPORT = {
+  email: '',      // например: 'team@example.com'
+  telegram: '',   // имя пользователя без @, например: 'bridgelogix_team'
+  whatsapp: ''    // номер с кодом страны, например: '77001234567'
+};
+
+const SERVICE_LABELS = {
+  truck: '🚛 Фура', gazelle: '🚐 Газель', ltl: '📦 Сборный груз',
+  rail: '🚆 ЖД', air: '✈️ Авиа', broker: '🛃 Таможенный брокер'
+};
+const AVATAR_COLORS = ['#6d5dfc', '#a855f7', '#ec4899', '#f43f5e', '#f59e0b', '#10b981', '#06b6d4', '#3b82f6'];
+
+/* Демо-профили для показа (вымышленные, без реальных контактов) */
+const DEMO_PROVIDERS = [
+  { id: 'demo:silk', demo: true, role: 'carrier', name: 'Silk Route Cargo', company: 'Демо-профиль', color: '#6d5dfc',
+    services: ['truck', 'ltl'], routes: 'Шымкент ⇄ Ташкент, Самарканд', price: 'сборный груз от ~95 ₸/кг (пример)',
+    about: 'Пример профиля перевозчика: сборные грузы и отдельные фуры по узбекскому направлению.' },
+  { id: 'demo:gazel', demo: true, role: 'carrier', name: 'Газель-Экспресс', company: 'Демо-профиль', color: '#06b6d4',
+    services: ['gazelle'], routes: 'Шымкент ⇄ Ташкент, Фергана', price: 'от ~300 ₸/км (пример)',
+    about: 'Пример: быстрые рейсы малотоннажным транспортом для интернет-магазинов и небольших партий.' },
+  { id: 'demo:broker', demo: true, role: 'carrier', name: 'Таможенный брокер «Граница»', company: 'Демо-профиль', color: '#f59e0b',
+    services: ['broker'], routes: 'Оформление: Шымкент, пункты пропуска', price: 'от ~25 000 ₸ за декларацию (пример)',
+    about: 'Пример: оформление деклараций, подбор кода товара, консультации по документам.' },
+  { id: 'demo:rail', demo: true, role: 'carrier', name: 'Rail & Air Logistics', company: 'Демо-профиль', color: '#10b981',
+    services: ['rail', 'air'], routes: 'Контейнеры ЖД и авиагруз', price: 'по запросу (пример)',
+    about: 'Пример: тяжёлые грузы по железной дороге и срочные отправления авиа.' },
+  { id: 'demo:team', demo: true, hidden: true, role: 'carrier', name: 'Команда BridgeLogix', company: 'Поддержка', color: '#a855f7',
+    services: [], routes: '', price: '', about: 'Вопросы по сервису и предложения.' }
+];
+
+/* ---------- Хранилище ---------- */
+const DB = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } },
+  del(k) { try { localStorage.removeItem(k); } catch (e) { /* нет доступа */ } },
+  keys() { try { return Object.keys(localStorage); } catch (e) { return []; } }
+};
+
+/* ---------- Хеширование пароля ---------- */
+function cyrb53(str, seed = 0) {
+  let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
+  for (let i = 0, ch; i < str.length; i++) {
+    ch = str.charCodeAt(i);
+    h1 = Math.imul(h1 ^ ch, 2654435761); h2 = Math.imul(h2 ^ ch, 1597334677);
+  }
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(16);
+}
+function randHex(n) {
+  try {
+    if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+      return [...crypto.getRandomValues(new Uint8Array(n))].map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+  } catch (e) { /* запасной вариант ниже */ }
+  let s = ''; for (let i = 0; i < n; i++) s += Math.floor(Math.random() * 256).toString(16).padStart(2, '0'); return s;
+}
+async function hashPw(pw, salt, kind) {
+  if (kind !== 'weak' && typeof crypto !== 'undefined' && crypto.subtle && typeof TextEncoder !== 'undefined') {
+    try {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(salt + ':' + pw));
+      return 'sha256:' + [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+    } catch (e) { /* упадём на запасной */ }
+  }
+  return 'weak:' + cyrb53(salt + ':' + pw);
+}
+const hashKind = (h) => (String(h).indexOf('weak:') === 0 ? 'weak' : 'sha256');
+
+/* ---------- Проверка «я человек» ----------
+   Клиентская проверка (случайная задача + ловушка для ботов + задержка).
+   Для настоящей защиты на боевом сайте подключите серверную капчу
+   (Cloudflare Turnstile / hCaptcha / reCAPTCHA) и проверяйте токен на сервере. */
+const Human = (() => {
+  let cur = null, passed = 0;
+  const TTL = 5 * 60 * 1000;
+  const rnd = (n) => { try { return crypto.getRandomValues(new Uint32Array(1))[0] % n; } catch (e) { return Math.floor(Math.random() * n); } };
+  const shuffle = (a) => a.map(v => [rnd(1000000), v]).sort((x, y) => x[0] - y[0]).map(x => x[1]);
+  function challenge() {
+    if (rnd(2) === 0) {
+      const a = 2 + rnd(8), b = 2 + rnd(8), ans = String(a + b);
+      const set = new Set([ans]);
+      while (set.size < 4) set.add(String(a + b + rnd(7) - 3));
+      cur = { q: 'Сколько будет ' + a + ' + ' + b + '?', opts: shuffle([...set]).map(v => ({ v, label: v })), ans };
+    } else {
+      const pool = [['🚚', 'грузовик'], ['✈️', 'самолёт'], ['🚆', 'поезд'], ['📦', 'коробку'], ['🛃', 'таможню'], ['🏁', 'флаг финиша']];
+      const pick = pool[rnd(pool.length)];
+      const others = shuffle(pool.filter(p => p !== pick)).slice(0, 3);
+      cur = { q: 'Выберите: ' + pick[1], opts: shuffle([pick, ...others]).map(p => ({ v: p[0], label: p[0] })), ans: pick[0] };
+    }
+    return cur;
+  }
+  const isPassed = () => passed > 0 && Date.now() - passed < TTL;
+  return {
+    current() { return cur || challenge(); },
+    answer(v) { if (cur && String(v) === cur.ans) { passed = Date.now(); return true; } challenge(); return false; },
+    isPassed,
+    consume() { const ok = isPassed(); passed = 0; if (ok) cur = null; return ok; },
+    reset() { passed = 0; cur = null; }
+  };
+})();
+
+/* ---------- Аккаунты ---------- */
+const Auth = (() => {
+  const KU = 'bl_users', KS = 'bl_session';
+  const attempts = {};
+  const users = () => DB.get(KU, []);
+  const saveUsers = (u) => DB.set(KU, u);
+  const pub = (u) => { if (!u) return null; const c = Object.assign({}, u); delete c.pass; return c; };
+  const validEmail = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e);
+  const clip = (v, n) => String(v == null ? '' : v).trim().slice(0, n);
+
+  async function register(f) {
+    const email = clip(f.email, 120).toLowerCase();
+    const name = clip(f.name, 60);
+    const password = String(f.password || '');
+    if (name.length < 2) return { error: 'Введите имя (минимум 2 символа)' };
+    if (!validEmail(email)) return { error: 'Введите корректный email' };
+    if (password.length < 8) return { error: 'Пароль: минимум 8 символов' };
+    const list = users();
+    if (list.some(u => u.email === email)) return { error: 'Аккаунт с таким email уже существует' };
+    if (!Human.consume()) return { error: 'Подтвердите, что вы человек', needHuman: true };
+    const salt = randHex(12);
+    const hash = await hashPw(password, salt);
+    const user = {
+      id: 'u' + randHex(6), name, email,
+      role: f.role === 'carrier' ? 'carrier' : 'business',
+      company: clip(f.company, 80), phone: clip(f.phone, 24), telegram: '', city: '', about: '',
+      services: [], routes: '', price: '', listed: true, publicContacts: true,
+      color: AVATAR_COLORS[Math.floor(Math.random() * AVATAR_COLORS.length)],
+      created: Date.now(), human: true, pass: { salt, hash }
+    };
+    list.push(user); saveUsers(list); DB.set(KS, user.id);
+    return { user: pub(user) };
+  }
+
+  async function login(emailRaw, password) {
+    const email = clip(emailRaw, 120).toLowerCase();
+    const a = attempts[email] || { n: 0, until: 0 };
+    if (Date.now() < a.until) return { error: 'Слишком много попыток. Подождите минуту.' };
+    if (a.n >= 2 && !Human.consume()) return { error: 'Подтвердите, что вы человек', needHuman: true };
+    const u = users().find(x => x.email === email);
+    const ok = u && (await hashPw(String(password || ''), u.pass.salt, hashKind(u.pass.hash))) === u.pass.hash;
+    if (!ok) {
+      a.n += 1; if (a.n >= 5) { a.until = Date.now() + 60000; a.n = 0; }
+      attempts[email] = a;
+      return { error: 'Неверный email или пароль' };
+    }
+    attempts[email] = { n: 0, until: 0 };
+    DB.set(KS, u.id);
+    return { user: pub(u) };
+  }
+
+  const logout = () => DB.del(KS);
+  const currentId = () => { const id = DB.get(KS, null); return id && users().some(u => u.id === id) ? id : null; };
+  const current = () => { const id = currentId(); return id ? pub(users().find(u => u.id === id)) : null; };
+  const uid = () => currentId() || 'guest';
+  const get = (id) => pub(users().find(u => u.id === id));
+  const carriers = () => users().filter(u => u.role === 'carrier' && u.listed !== false).map(pub);
+
+  function update(patch) {
+    const id = currentId(); if (!id) return { error: 'Нужно войти в аккаунт' };
+    const list = users(); const u = list.find(x => x.id === id);
+    const name = clip(patch.name, 60);
+    if (patch.name !== undefined && name.length < 2) return { error: 'Введите имя (минимум 2 символа)' };
+    if (patch.name !== undefined) u.name = name;
+    ['company', 'city'].forEach(k => { if (patch[k] !== undefined) u[k] = clip(patch[k], 80); });
+    if (patch.phone !== undefined) u.phone = clip(patch.phone, 24);
+    if (patch.telegram !== undefined) u.telegram = clip(patch.telegram, 40);
+    if (patch.about !== undefined) u.about = clip(patch.about, 300);
+    if (patch.routes !== undefined) u.routes = clip(patch.routes, 120);
+    if (patch.price !== undefined) u.price = clip(patch.price, 80);
+    if (patch.services !== undefined) u.services = (patch.services || []).filter(s => SERVICE_LABELS[s]);
+    if (patch.listed !== undefined) u.listed = !!patch.listed;
+    if (patch.publicContacts !== undefined) u.publicContacts = !!patch.publicContacts;
+    saveUsers(list);
+    return { user: pub(u) };
+  }
+
+  async function changePassword(oldPw, newPw) {
+    const id = currentId(); if (!id) return { error: 'Нужно войти в аккаунт' };
+    if (String(newPw || '').length < 8) return { error: 'Новый пароль: минимум 8 символов' };
+    const list = users(); const u = list.find(x => x.id === id);
+    if ((await hashPw(String(oldPw || ''), u.pass.salt, hashKind(u.pass.hash))) !== u.pass.hash) return { error: 'Текущий пароль неверный' };
+    const salt = randHex(12); u.pass = { salt, hash: await hashPw(String(newPw), salt) };
+    saveUsers(list); return { ok: true };
+  }
+
+  function remove() {
+    const id = currentId(); if (!id) return false;
+    saveUsers(users().filter(u => u.id !== id));
+    DB.keys().filter(k => k.indexOf('bl_' + id + '_') === 0).forEach(DB.del);
+    DB.del(KS); return true;
+  }
+
+  return { register, login, needHuman: (e) => ((attempts[clip(e, 120).toLowerCase()] || { n: 0 }).n >= 2), logout, current, currentId, uid, get, carriers, update, changePassword, remove };
+})();
+
+/* ---------- Сообщения ---------- */
+const Chat = (() => {
+  const K = 'bl_threads';
+  const all = () => DB.get(K, {});
+  const tid = (a, b) => [a, b].sort().join('|');
+  const rid = () => 'm' + Date.now().toString(36) + randHex(2);
+
+  function ensure(a, b) {
+    const t = all(); const id = tid(a, b);
+    if (!t[id]) { t[id] = { id, members: [a, b], msgs: [], read: {} }; DB.set(K, t); }
+    return id;
+  }
+  function send(from, to, text, attach, auto) {
+    const body = String(text || '').trim().slice(0, 2000);
+    if (!body && !attach) return null;
+    const t = all(); const id = tid(from, to);
+    if (!t[id]) t[id] = { id, members: [from, to], msgs: [], read: {} };
+    const m = { id: rid(), from, text: body, ts: Date.now() };
+    if (attach) m.attach = attach;
+    if (auto) m.auto = true;
+    t[id].msgs.push(m);
+    if (t[id].msgs.length > 300) t[id].msgs = t[id].msgs.slice(-300);
+    t[id].read[from] = m.ts;
+    DB.set(K, t);
+    return { threadId: id, msg: m };
+  }
+  const get = (id) => all()[id] || null;
+  function threadsFor(uid) {
+    return Object.values(all()).filter(t => t.members.indexOf(uid) >= 0)
+      .sort((a, b) => lastTs(b) - lastTs(a));
+  }
+  const lastTs = (t) => (t.msgs.length ? t.msgs[t.msgs.length - 1].ts : 0);
+  function unreadIn(t, uid) { const r = (t.read && t.read[uid]) || 0; return t.msgs.filter(m => m.from !== uid && m.ts > r).length; }
+  function unread(uid) { return threadsFor(uid).reduce((a, t) => a + unreadIn(t, uid), 0); }
+  function markRead(id, uid) {
+    const t = all(); if (!t[id]) return;
+    t[id].read = t[id].read || {}; t[id].read[uid] = Date.now(); DB.set(K, t);
+  }
+  return { ensure, send, get, threadsFor, unreadIn, unread, markRead, lastTs, tid };
+})();
+
 /* =====================================================================
    BridgeLogix — ДАННЫЕ
    ВАЖНО: все тарифы, сроки и вероятности ПРИМЕРНЫЕ (демо-оценка).
@@ -839,9 +1319,16 @@ function reportText(inp, S, r, money) {
 /* ---------- утилиты ---------- */
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+/* данные привязаны к аккаунту: bl_<id>_<имя>; гость хранится под id guest */
+const USERKEYS = { bl_state: 'state', bl_settings: 'settings', bl_ship: 'ship', bl_docs: 'docs' };
+const kmap = (k) => (USERKEYS[k] ? 'bl_' + Auth.uid() + '_' + USERKEYS[k] : k);
 const store = {
-  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
-  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* хранилище недоступно */ } }
+  get(k, d) { try { const v = localStorage.getItem(kmap(k)); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(kmap(k), JSON.stringify(v)); } catch (e) { /* хранилище недоступно */ } }
+};
+const ustore = {
+  get(n, d) { return store.get('bl_' + Auth.uid() + '_' + n, d); },
+  set(n, v) { store.set('bl_' + Auth.uid() + '_' + n, v); }
 };
 const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const nf = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 });
@@ -871,6 +1358,17 @@ let state = Object.assign({}, DEFAULT_STATE, store.get('bl_state', {}));
 let S = mergeSettings(store.get('bl_settings', null));
 let ship = store.get('bl_ship', []);
 let docsDone = store.get('bl_docs', {});
+let calcHistory = ustore.get('history', []);
+function loadUserData() {
+  state = Object.assign({}, DEFAULT_STATE, store.get('bl_state', {}));
+  if (!CITIES[state.city]) state.city = DEFAULT_STATE.city;
+  if (!CARGO[state.cargo]) state.cargo = DEFAULT_STATE.cargo;
+  if (!MODES[state.mode]) state.mode = DEFAULT_STATE.mode;
+  S = mergeSettings(store.get('bl_settings', null));
+  ship = store.get('bl_ship', []);
+  docsDone = store.get('bl_docs', {});
+  calcHistory = ustore.get('history', []);
+}
 const ui = { cur: store.get('bl_cur', 'KZT'), tab: 'calc', filter: 'all', open: new Set() };
 const TABS = ['calc', 'compare', 'docs', 'track', 'stats', 'tariffs'];
 
@@ -1011,6 +1509,8 @@ function renderCalc() {
       <div class="advice">${adv.map(a => `<div class="adv ${a.type}"><div class="ai">${a.icon}</div><div><b>${esc(a.title)}</b><p>${esc(a.text)}</p></div></div>`).join('')}</div>
       <div class="actions" style="margin-top:14px">
         <button class="btn solid" data-act="save">📍 Сохранить в трекер</button>
+        <button class="btn line" data-sa="savecalc">💾 Сохранить расчёт</button>
+        <button class="btn line" data-sa="request">📨 Запросить у перевозчика</button>
         <button class="btn line" data-act="docs">📄 Документы для этого груза</button>
         <button class="btn line" data-act="copy">📋 Копировать расчёт</button>
         <button class="btn line" data-act="share">🔗 Поделиться ссылкой</button>
@@ -1254,8 +1754,9 @@ function showTab(name, scroll) {
   if (!TABS.includes(name)) name = 'calc';
   ui.tab = name;
   $$('.tab').forEach(t => t.classList.toggle('on', t.id === 'tab-' + name));
-  $$('#nav button').forEach(b => b.classList.toggle('on', b.dataset.tab === name));
+  $$('#nav button, #bnav button').forEach(b => b.classList.toggle('on', b.dataset.tab === name));
   RENDER[name]();
+  if (typeof afterTab === 'function') afterTab(name);
   try { history.replaceState(null, '', '#' + name); } catch (e) { /* file:// */ }
   if (scroll) window.scrollTo({ top: ($('main') ? $('main').offsetTop : 0) - 70, behavior: 'smooth' });
 }
@@ -1318,7 +1819,7 @@ function bind() {
     const dir = t.closest('[data-dir]'); if (dir) { state.dir = dir.dataset.dir; updateAll(true); return; }
     const cg = t.closest('[data-cargo]'); if (cg) { state.cargo = cg.dataset.cargo; updateAll(true); return; }
     const md = t.closest('[data-mode]');
-    if (md) { state.mode = md.dataset.mode; updateAll(true); if (md.dataset.jump) { toast('Способ выбран: ' + MODES[state.mode].name); } return; }
+    if (md && MODES[md.dataset.mode]) { state.mode = md.dataset.mode; updateAll(true); if (md.dataset.jump) { toast('Способ выбран: ' + MODES[state.mode].name); } return; }
     const pr = t.closest('[data-preset]');
     if (pr) { const [w, v] = pr.dataset.preset.split(',').map(Number); state.weight = w; state.volume = v; updateAll(true); return; }
     const pz = t.closest('[data-prio]'); if (pz) { state.priority = pz.dataset.prio; updateAll(false); return; }
@@ -1398,6 +1899,569 @@ function init() {
   if (ui.tab !== 'calc') renderCalc();
 }
 init();
+
+/* =====================================================================
+   BridgeLogix — SOCIAL: вход, кабинет, каталог перевозчиков, чат,
+   помощь, палитра команд. Работает поверх app.js и platform.js
+   ===================================================================== */
+'use strict';
+
+TABS.push('carriers', 'chat', 'cabinet');
+Object.assign(RENDER, { carriers: renderCarriers, chat: renderChat, cabinet: renderCabinet });
+
+const ROLE_NAMES = { business: 'Предприниматель', carrier: 'Перевозчик / брокер' };
+const dirUI = { q: '', svc: 'all' };
+const chatUI = { active: null, draft: '' };
+let authAfter = null;
+let authOpened = 0;
+
+function humanHTML() {
+  if (Human.isPassed()) return '<div class="human ok">✅ Проверка пройдена — вы человек</div>';
+  const c = Human.current();
+  return `<div class="human"><div class="h-q">🤖 Проверка: <b>${esc(c.q)}</b></div>
+    <div class="h-opts">${c.opts.map(o => `<button type="button" class="h-opt" data-sa="humanpick" data-v="${esc(o.v)}">${esc(o.label)}</button>`).join('')}</div>
+    <div class="h-hint">Так мы отсеиваем ботов и спам</div></div>`;
+}
+const pal = { items: [], idx: 0 };
+
+/* ---------- утилиты ---------- */
+const fmtDT = (ts) => new Date(ts).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+const fmtD = (ts) => new Date(ts).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+function initials(name) { const p = String(name || '?').trim().split(/\s+/); return ((p[0] || '?')[0] + (p[1] ? p[1][0] : '')).toUpperCase(); }
+function avatar(p, cls) { return `<span class="av ${cls || ''}" style="background:${esc(p.color || '#6d5dfc')}">${esc(initials(p.name))}</span>`; }
+function normPhone(s) { let d = String(s || '').replace(/\D/g, ''); if (d.length === 11 && d[0] === '8') d = '7' + d.slice(1); return d; }
+function waLink(p) { const d = normPhone(p); return d.length >= 10 && d.length <= 15 ? 'https://wa.me/' + d : ''; }
+function telLink(p) { const d = normPhone(p); return d.length >= 10 && d.length <= 15 ? 'tel:+' + d : ''; }
+function tgLink(h) { const x = String(h || '').trim().replace(/^https?:\/\/t\.me\//i, '').replace(/^@/, ''); return /^[A-Za-z0-9_]{5,32}$/.test(x) ? 'https://t.me/' + x : ''; }
+const mailOk = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(e || ''));
+const svcText = (p) => (p.services || []).map(s => SERVICE_LABELS[s]).filter(Boolean).join(' · ');
+
+function party(id) {
+  const d = DEMO_PROVIDERS.find(x => x.id === id); if (d) return d;
+  const u = Auth.get(id); if (u) return u;
+  return { id, name: 'Удалённый аккаунт', role: 'business', color: '#94a3b8', services: [] };
+}
+function directory() {
+  const me = Auth.currentId();
+  return [...Auth.carriers().filter(c => c.id !== me), ...DEMO_PROVIDERS.filter(d => !d.hidden)];
+}
+
+function openModal(html) { const d = $('#modal'); d.innerHTML = html; if (!d.open) d.showModal(); }
+function closeModal() { const d = $('#modal'); if (d && d.open) d.close(); }
+
+function confetti() {
+  const colors = ['#6d5dfc', '#ec4899', '#f59e0b', '#10b981', '#06b6d4'];
+  for (let i = 0; i < 42; i++) {
+    const p = document.createElement('i'); p.className = 'cf';
+    p.style.left = (10 + Math.random() * 80) + 'vw';
+    p.style.background = colors[i % colors.length];
+    p.style.setProperty('--dx', (Math.random() * 240 - 120) + 'px');
+    p.style.animationDelay = (Math.random() * 0.25) + 's';
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 2200);
+  }
+}
+
+/* ---------- шапка и бейджи ---------- */
+function updateHeader() {
+  const u = Auth.current(); const b = $('#userBtn'); if (!b) return;
+  b.innerHTML = u ? avatar(u, 'sm') + '<span class="un">' + esc(u.name.split(' ')[0]) + '</span>' : '<span>🔑</span><span class="un">Войти</span>';
+  b.dataset.sa = u ? 'gocab' : 'login';
+  updateBadges();
+}
+function updateBadges() {
+  const u = Auth.current(); const n = u ? Chat.unread(u.id) : 0;
+  $$('.chat-badge').forEach(el => { el.textContent = n > 99 ? '99+' : String(n); el.hidden = !n; });
+}
+function afterTab(name) {
+  updateBadges();
+  if (name === 'chat') $('#chatInput') && $('#chatInput').focus();
+}
+function afterAuthChange() {
+  loadUserData(); syncForm(); updateHeader();
+  renderCalc(); if (ui.tab !== 'calc') RENDER[ui.tab]();
+}
+function afterChatChange() {
+  updateBadges();
+  if (ui.tab === 'chat') renderChat();
+  if (ui.tab === 'cabinet') renderCabinet();
+}
+
+/* =====================================================================
+   ВХОД / РЕГИСТРАЦИЯ
+   ===================================================================== */
+function authHTML(mode) {
+  const reg = mode === 'register';
+  return `<div class="auth">
+    <aside class="auth-art"><div class="logo big">🌉</div><h3>BridgeLogix</h3>
+      <p>Личный кабинет для тех, кто возит грузы между Шымкентом и Узбекистаном.</p>
+      <ul><li>📍 Трекер поставок и история расчётов</li><li>🤝 Прямая связь с перевозчиками</li><li>📨 Заявки и ответы в одном месте</li></ul></aside>
+    <form class="auth-form" id="authForm" data-amode="${mode}" novalidate>
+      <button type="button" class="x" data-sa="closemodal" aria-label="Закрыть">✕</button>
+      <div class="seg"><button type="button" data-sa="authmode" data-m="login" class="${reg ? '' : 'on'}">Вход</button><button type="button" data-sa="authmode" data-m="register" class="${reg ? 'on' : ''}">Регистрация</button></div>
+      ${reg ? `<label class="lbl">Кто вы?</label>
+        <div class="roles"><label class="role"><input type="radio" name="role" value="business" checked><span>🛍️<b>Предприниматель</b><small>Отправляю или получаю грузы</small></span></label>
+        <label class="role"><input type="radio" name="role" value="carrier"><span>🚛<b>Перевозчик / брокер</b><small>Предлагаю услуги</small></span></label></div>
+        <label class="lbl">Имя</label><input type="text" name="name" maxlength="60" autocomplete="name" placeholder="Как к вам обращаться">` : ''}
+      <label class="lbl">Email</label><input type="text" name="email" maxlength="120" autocomplete="email" inputmode="email" placeholder="you@example.com">
+      <label class="lbl">Пароль</label>
+      <div class="pw"><input type="password" name="password" maxlength="100" autocomplete="${reg ? 'new-password' : 'current-password'}" placeholder="Минимум 8 символов"><button type="button" class="eye" data-sa="togglepw" aria-label="Показать пароль">👁</button></div>
+      ${reg ? `<div class="carrier-only" hidden><label class="lbl">Компания</label><input type="text" name="company" maxlength="80" placeholder="Название компании">
+        <label class="lbl">Телефон (для WhatsApp)</label><input type="text" name="phone" maxlength="24" placeholder="+7 7xx xxx xx xx"></div>` : ''}
+      <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div id="humanBox">${reg ? humanHTML() : ''}</div>
+      <div class="err" id="authErr" role="alert"></div>
+      <button class="btn solid wide" type="submit">${reg ? 'Создать аккаунт' : 'Войти'}</button>
+      <p class="hint">Демо-режим: данные аккаунтов хранятся только в этом браузере.</p>
+    </form></div>`;
+}
+function openAuth(mode) { authOpened = Date.now(); openModal(authHTML(mode || 'login')); }
+
+function migrateGuest(newId) {
+  ['state', 'settings', 'ship', 'docs', 'history'].forEach(k => {
+    const gk = 'bl_guest_' + k, nk = 'bl_' + newId + '_' + k;
+    const v = DB.get(gk, null);
+    if (v != null && DB.get(nk, null) == null) DB.set(nk, v);
+  });
+}
+
+async function submitAuth(f) {
+  const mode = f.dataset.amode; const v = (n) => (f.elements[n] ? f.elements[n].value : '');
+  const err = $('#authErr'); err.textContent = '';
+  const box = $('#humanBox');
+  if (v('website')) { err.textContent = 'Не удалось отправить форму'; return; }
+  if (Date.now() - authOpened < 1500) { err.textContent = 'Слишком быстро — попробуйте ещё раз'; return; }
+  if (mode === 'register' && !Human.isPassed()) { err.textContent = 'Пройдите проверку «я человек»'; if (box) box.innerHTML = humanHTML(); return; }
+  if (mode === 'login' && Auth.needHuman(v('email')) && !Human.isPassed()) { err.textContent = 'Подтвердите, что вы человек'; if (box) box.innerHTML = humanHTML(); return; }
+  const btn = f.querySelector('button[type=submit]'); btn.disabled = true;
+  const roleEl = f.querySelector('input[name=role]:checked');
+  const res = mode === 'register'
+    ? await Auth.register({ name: v('name'), email: v('email'), password: v('password'), role: roleEl ? roleEl.value : 'business', company: v('company'), phone: v('phone') })
+    : await Auth.login(v('email'), v('password'));
+  btn.disabled = false;
+  if (res.error) {
+    err.textContent = res.error;
+    if (box && (mode === 'register' || res.needHuman || Auth.needHuman(v('email')))) box.innerHTML = humanHTML();
+    return;
+  }
+  if (mode === 'register') migrateGuest(res.user.id);
+  closeModal(); afterAuthChange();
+  const first = res.user.name.split(' ')[0];
+  toast(mode === 'register' ? 'Добро пожаловать, ' + first + '! 🎉' : 'С возвращением, ' + first + ' 👋');
+  if (mode === 'register') confetti();
+  const cb = authAfter; authAfter = null;
+  if (cb) cb(); else if (mode === 'register') showTab('cabinet', true);
+}
+
+/* =====================================================================
+   КАБИНЕТ
+   ===================================================================== */
+function guestCabinet(title, icon, text) {
+  return `<div class="card hero-lite"><div class="big-ico">${icon}</div><h2>${title}</h2><p>${text}</p>
+    <div class="actions" style="justify-content:center"><button class="btn solid" data-sa="register">Создать аккаунт</button><button class="btn line" data-sa="login">Войти</button></div>
+    <ul class="perks"><li>📍 Поставки и расчёты сохраняются в кабинете</li><li>🤝 Прямая переписка с перевозчиками</li><li>📨 Заявки с параметрами груза в один клик</li></ul></div>`;
+}
+
+function renderCabinet() {
+  const el = $('#tab-cabinet'); const u = Auth.current();
+  if (!u) { el.innerHTML = guestCabinet('Личный кабинет', '👤', 'Войдите, чтобы вести поставки, хранить расчёты и общаться с перевозчиками.'); return; }
+  const threads = Chat.threadsFor(u.id);
+  const unread = Chat.unread(u.id);
+  const reqs = threads.reduce((a, t) => a + t.msgs.filter(m => m.from !== u.id && m.attach).length, 0);
+  const spent = ship.reduce((a, s) => a + (s.factCost || 0), 0);
+  const isC = u.role === 'carrier';
+  const hist = calcHistory.slice(0, 6).map(h => {
+    const c = CARGO[h.state.cargo] || CARGO.clothes;
+    return `<div class="li"><div><b>${c.emoji} ${esc(c.name)} · ${esc((CITIES[h.state.city] || CITIES.tashkent).name)}</b><small>${fmtDT(h.ts)} · ${esc((MODES[h.state.mode] || MODES.ltl).short)} · ${esc(money(h.total))} · ~${fmt1(h.days)} дн.</small></div>
+      <div class="li-a"><button class="btn line sm" data-sa="openhist" data-id="${esc(h.id)}">Открыть</button><button class="btn danger sm" data-sa="delhist" data-id="${esc(h.id)}" aria-label="Удалить">🗑</button></div></div>`;
+  }).join('');
+  const lastShips = ship.slice(0, 4).map(s => {
+    const st = STATUSES.find(x => x.id === s.status) || STATUSES[0];
+    return `<div class="li"><div><b>${(CARGO[s.cargo] || CARGO.clothes).emoji} ${esc(s.title)}</b><small>${st.emoji} ${st.name} · ${esc(s.date)}</small></div><span class="pill">${esc(money(s.planCost))}</span></div>`;
+  }).join('');
+  el.innerHTML = `
+    <div class="cab-banner">
+      ${avatar(u, 'xl')}
+      <div class="cb-info"><h2>${esc(u.name)}</h2>
+        <div class="cb-tags"><span class="tag">${ROLE_NAMES[u.role]}</span>${u.company ? `<span class="tag">🏢 ${esc(u.company)}</span>` : ''}${u.city ? `<span class="tag">📍 ${esc(u.city)}</span>` : ''}<span class="tag">с ${fmtD(u.created)}</span>${u.human ? '<span class="tag tag-ver">✓ Человек подтверждён</span>' : ''}</div>
+        <p>${esc(u.about || 'Расскажите о себе и своём бизнесе — это поможет партнёрам.')}</p></div>
+      <div class="actions"><button class="btn line sm" data-sa="editprofile">✏️ Профиль</button><button class="btn line sm" data-sa="logout">🚪 Выйти</button></div>
+    </div>
+    <div class="kpis3">
+      <div class="stat"><small>Поставок</small><b>${ship.length}</b><span>в трекере</span></div>
+      <div class="stat"><small>Сохранённых расчётов</small><b>${calcHistory.length}</b></div>
+      <div class="stat"><small>Новых сообщений</small><b>${unread}</b><span>${isC ? 'заявок получено: ' + reqs : 'диалогов: ' + threads.length}</span></div>
+      <div class="stat"><small>Потрачено фактически</small><b>${esc(money(spent))}</b></div>
+    </div>
+    <div class="charts2">
+      <div class="card"><h3>💾 Мои расчёты</h3>${hist || '<p class="muted">Пока пусто. В калькуляторе нажмите «Сохранить расчёт».</p>'}</div>
+      <div class="card"><h3>📍 Последние поставки</h3>${lastShips || '<p class="muted">Поставок пока нет.</p>'}<div class="actions" style="margin-top:12px"><button class="btn line sm" data-tab="track">Открыть трекер</button></div></div>
+    </div>
+    ${isC ? `<div class="card" style="margin-top:18px"><h3>🚛 Ваша карточка в каталоге</h3>
+      <p class="muted">${u.listed === false ? 'Сейчас скрыта.' : 'Видна предпринимателям.'} Услуги: ${esc(svcText(u) || 'не указаны')}. Маршруты: ${esc(u.routes || '—')}. Цены: ${esc(u.price || '—')}.</p>
+      <button class="btn line sm" data-sa="editprofile">Изменить карточку</button></div>` : ''}
+    <div class="card" style="margin-top:18px"><h3>🔐 Безопасность и данные</h3>
+      <p class="muted">Email: ${esc(u.email)}</p>
+      <div class="actions"><button class="btn line sm" data-sa="chpass">Сменить пароль</button><button class="btn line sm" data-sa="export">⬇️ Скачать мои данные</button><button class="btn danger sm" data-sa="deleteacc">Удалить аккаунт</button></div></div>`;
+}
+
+function profileHTML(u) {
+  const isC = u.role === 'carrier';
+  return `<form class="dlg" id="profileForm"><h2>✏️ Профиль</h2><div class="grid">
+    <div class="full"><label class="lbl">Имя</label><input type="text" name="name" maxlength="60" value="${esc(u.name)}"></div>
+    <div><label class="lbl">Компания</label><input type="text" name="company" maxlength="80" value="${esc(u.company)}"></div>
+    <div><label class="lbl">Город</label><input type="text" name="city" maxlength="80" value="${esc(u.city)}"></div>
+    <div><label class="lbl">Телефон (WhatsApp)</label><input type="text" name="phone" maxlength="24" placeholder="+7 7xx xxx xx xx" value="${esc(u.phone)}"></div>
+    <div><label class="lbl">Telegram</label><input type="text" name="telegram" maxlength="40" placeholder="username" value="${esc(u.telegram)}"></div>
+    <div class="full"><label class="lbl">О себе</label><textarea name="about" rows="2" maxlength="300">${esc(u.about)}</textarea></div>
+    ${isC ? `<div class="full"><label class="lbl">Услуги</label><div class="svc-pick">${Object.keys(SERVICE_LABELS).map(k => `<label class="chip"><input type="checkbox" name="svc" value="${k}" ${(u.services || []).includes(k) ? 'checked' : ''}> ${SERVICE_LABELS[k]}</label>`).join('')}</div></div>
+      <div><label class="lbl">Маршруты</label><input type="text" name="routes" maxlength="120" value="${esc(u.routes)}"></div>
+      <div><label class="lbl">Цены</label><input type="text" name="price" maxlength="80" placeholder="например, от 95 ₸/кг" value="${esc(u.price)}"></div>
+      <label class="check full"><input type="checkbox" name="listed" ${u.listed !== false ? 'checked' : ''}> Показывать меня в каталоге</label>
+      <label class="check full"><input type="checkbox" name="publicContacts" ${u.publicContacts !== false ? 'checked' : ''}> Показывать телефон и Telegram в каталоге</label>` : ''}
+    </div><div class="err" id="formErr" role="alert"></div>
+    <div class="dlg-actions"><button type="button" class="btn line" data-sa="closemodal">Отмена</button><button type="submit" class="btn solid">Сохранить</button></div></form>`;
+}
+
+function passHTML() {
+  return `<form class="dlg" id="passForm"><h2>🔐 Смена пароля</h2>
+    <label class="lbl">Текущий пароль</label><input type="password" name="old" autocomplete="current-password">
+    <label class="lbl">Новый пароль</label><input type="password" name="n1" autocomplete="new-password" placeholder="Минимум 8 символов">
+    <label class="lbl">Повторите новый пароль</label><input type="password" name="n2" autocomplete="new-password">
+    <div class="err" id="formErr" role="alert"></div>
+    <div class="dlg-actions"><button type="button" class="btn line" data-sa="closemodal">Отмена</button><button type="submit" class="btn solid">Сменить</button></div></form>`;
+}
+
+function exportMyData() {
+  const u = Auth.current(); if (!u) return;
+  const data = { exported: new Date().toISOString(), profile: u, state, shipments: ship, history: calcHistory, checklist: docsDone };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'bridgelogix-my-data.json';
+  document.body.appendChild(a); a.click(); a.remove(); toast('Файл сохранён');
+}
+
+/* =====================================================================
+   КАТАЛОГ ПЕРЕВОЗЧИКОВ
+   ===================================================================== */
+function carrierCard(p) {
+  const showC = !p.demo && p.publicContacts !== false;
+  const wa = showC ? waLink(p.phone) : '', tg = showC ? tgLink(p.telegram) : '', tel = showC ? telLink(p.phone) : '';
+  const ext = (href, label) => `<a class="btn line sm" href="${esc(href)}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+  return `<div class="card carrier">
+    <div class="c-head">${avatar(p, 'lg')}<div><h3>${esc(p.name)}</h3><small>${esc(p.company || '')}</small></div>
+      <span class="tag ${p.demo ? 'tag-demo' : 'tag-live'}">${p.demo ? 'Демо' : '● На платформе'}</span>${!p.demo && p.human ? '<span class="tag tag-ver" title="Проверка «я человек» пройдена">✓</span>' : ''}</div>
+    <div class="c-svc">${(p.services || []).map(s => `<span class="tag">${SERVICE_LABELS[s]}</span>`).join('')}</div>
+    ${p.routes ? `<div class="c-row">🗺️ ${esc(p.routes)}</div>` : ''}${p.price ? `<div class="c-row">💰 ${esc(p.price)}</div>` : ''}
+    <p class="muted">${esc(p.about || '')}</p>
+    <div class="actions"><button class="btn solid sm" data-sa="chatwith" data-id="${esc(p.id)}">💬 Написать</button><button class="btn line sm" data-sa="reqto" data-id="${esc(p.id)}">📨 Запросить расчёт</button>
+      ${wa ? ext(wa, 'WhatsApp') : ''}${tg ? ext(tg, 'Telegram') : ''}${tel ? ext(tel, '📞 Позвонить') : ''}</div></div>`;
+}
+function carrierListHTML() {
+  const q = dirUI.q.trim().toLowerCase();
+  const list = directory().filter(p => (dirUI.svc === 'all' || (p.services || []).includes(dirUI.svc)) &&
+    (!q || [p.name, p.company, p.routes, p.about, p.price].join(' ').toLowerCase().includes(q)));
+  return list.length ? list.map(carrierCard).join('') : '<div class="card empty"><div class="big">🔍</div><p>Никого не нашли. Измените запрос или фильтр.</p></div>';
+}
+function renderCarriers() {
+  const chips = [['all', 'Все'], ...Object.keys(SERVICE_LABELS).map(k => [k, SERVICE_LABELS[k]])]
+    .map(([k, n]) => `<button data-sa="setsvc" data-v="${k}" class="${dirUI.svc === k ? 'on' : ''}">${n}</button>`).join('');
+  $('#tab-carriers').innerHTML = `
+    <div class="head-row"><div><h2>🤝 Перевозчики и брокеры</h2><p>Напишите напрямую или отправьте заявку с параметрами вашего груза. Профили с пометкой «Демо» — примеры.</p></div>
+      <button class="btn solid sm" data-sa="reqto" data-id="">📨 Запросить расчёт</button></div>
+    <input type="search" id="carrierSearch" class="search" placeholder="🔎 Поиск по названию, маршруту, услуге…" value="${esc(dirUI.q)}" maxlength="60">
+    <div class="fseg" id="svcSeg" style="margin:12px 0">${chips}</div>
+    <div class="carriers" id="carrierList">${carrierListHTML()}</div>`;
+}
+
+/* =====================================================================
+   ЧАТ
+   ===================================================================== */
+function buildQuote() {
+  const r = calcShipment(state, S); const c = CARGO[state.cargo];
+  return {
+    type: 'quote',
+    title: c.name + ': ' + (state.dir === 'exp' ? 'Шымкент → ' + CITIES[state.city].name : CITIES[state.city].name + ' → Шымкент'),
+    lines: ['Способ: ' + MODES[state.mode].name, 'Вес ' + nf.format(state.weight) + ' кг · объём ' + state.volume + ' м³', 'Стоимость товара: ' + fmtKZT(state.value)],
+    total: Math.round(r.total), days: Math.round(r.expDays * 10) / 10,
+    state: { dir: state.dir, city: state.city, cargo: state.cargo, weight: state.weight, volume: state.volume, value: state.value, mode: state.mode }
+  };
+}
+function applySnapshot(s) {
+  if (!s) return;
+  if (DIRS[s.dir]) state.dir = s.dir;
+  if (CITIES[s.city]) state.city = s.city;
+  if (CARGO[s.cargo]) state.cargo = s.cargo;
+  if (MODES[s.mode]) state.mode = s.mode;
+  ['weight', 'volume', 'value'].forEach(k => { const n = Number(s[k]); if (isFinite(n) && n >= 0) state[k] = n; });
+  ['urgent', 'docsPrepared', 'preDecl', 'eQueue', 'offPeak', 'insurance', 'includeTaxes'].forEach(k => { if (k in s) state[k] = !!s[k]; });
+}
+function quoteHTML(m, tid) {
+  const a = m.attach; if (!a || a.type !== 'quote') return '';
+  return `<div class="quote"><b>📨 ${esc(a.title)}</b>${(a.lines || []).slice(0, 5).map(l => `<span>${esc(l)}</span>`).join('')}
+    <div class="q-row"><em>Расчёт: ${esc(money(Number(a.total) || 0))}</em><em>~${fmt1(Number(a.days) || 0)} дн.</em></div>
+    <button class="btn line sm" data-sa="openquote" data-t="${esc(tid)}" data-m="${esc(m.id)}">Открыть в калькуляторе</button></div>`;
+}
+
+function sendChat(toId, text, attach) {
+  const u = Auth.current(); if (!u) return null;
+  const res = Chat.send(u.id, toId, text, attach);
+  if (!res) return null;
+  const p = party(toId);
+  if (p.demo) {
+    setTimeout(() => {
+      const msg = attach
+        ? '🤖 Автоответ демо-профиля: заявка получена. В реальной версии перевозчик подтвердит цену и сроки лично.'
+        : '🤖 Автоответ демо-профиля: сообщение получено. Это пример диалога; реальные перевозчики отвечают сами.';
+      Chat.send(toId, u.id, msg, null, true); afterChatChange();
+    }, 1200);
+  }
+  return res;
+}
+
+function openThreadWith(id) {
+  const u = Auth.current();
+  if (!u) { authAfter = () => openThreadWith(id); openAuth('login'); return; }
+  if (id === u.id) { toast('Это ваш профиль 🙂'); return; }
+  chatUI.active = Chat.ensure(u.id, id);
+  showTab('chat', true);
+}
+
+function renderChat() {
+  const el = $('#tab-chat'); const u = Auth.current();
+  if (!u) { el.innerHTML = guestCabinet('Сообщения', '💬', 'Войдите, чтобы переписываться с перевозчиками и отправлять заявки.'); return; }
+  const threads = Chat.threadsFor(u.id);
+  if (chatUI.active && !threads.some(t => t.id === chatUI.active)) chatUI.active = null;
+  if (!chatUI.active && threads.length && window.innerWidth > 820) chatUI.active = threads[0].id;
+  const cur = chatUI.active ? Chat.get(chatUI.active) : null;
+  const other = cur ? party(cur.members.find(m => m !== u.id) || u.id) : null;
+  if (cur) Chat.markRead(cur.id, u.id);
+
+  const list = threads.map(t => {
+    const p = party(t.members.find(m => m !== u.id) || u.id);
+    const last = t.msgs[t.msgs.length - 1]; const n = t.id === chatUI.active ? 0 : Chat.unreadIn(t, u.id);
+    return `<button class="th ${t.id === chatUI.active ? 'on' : ''}" data-sa="openthread" data-t="${esc(t.id)}">${avatar(p, 'md')}
+      <span class="th-t"><b>${esc(p.name)}</b><small>${last ? esc((last.attach ? '📨 Заявка · ' : '') + last.text).slice(0, 60) : 'Новый диалог'}</small></span>
+      ${n ? `<i class="nb">${n}</i>` : ''}</button>`;
+  }).join('');
+
+  let pane;
+  if (cur) {
+    const msgs = cur.msgs.map(m => `<div class="msg ${m.from === u.id ? 'me' : 'them'}"><div class="bub">${m.auto ? '<small class="auto">автоответ</small>' : ''}${m.text ? esc(m.text).replace(/\n/g, '<br>') : ''}${quoteHTML(m, cur.id)}<time>${fmtDT(m.ts)}</time></div></div>`).join('');
+    pane = `<div class="pane-h"><button class="back" data-sa="backthread" aria-label="Назад">←</button>${avatar(other, 'md')}<div><b>${esc(other.name)}</b><small>${other.demo ? 'Демо-профиль' : esc(ROLE_NAMES[other.role] || '')}</small></div></div>
+      <div class="msgs" id="msgs">${msgs || '<div class="muted center">Напишите первое сообщение 👋</div>'}</div>
+      <form class="composer" id="chatForm" data-to="${esc(other.id)}"><textarea id="chatInput" rows="1" maxlength="2000" placeholder="Сообщение… (Enter — отправить)"></textarea><button class="btn solid" type="submit">➤</button></form>`;
+  } else {
+    pane = `<div class="empty"><div class="big">💬</div><h3>Выберите диалог</h3><p>Или найдите перевозчика в каталоге и напишите ему.</p><button class="btn solid" data-tab="carriers">Открыть каталог</button></div>`;
+  }
+  el.innerHTML = `<div class="head-row"><div><h2>💬 Сообщения</h2><p>Заявки и переписка с перевозчиками.</p></div><button class="btn line sm" data-sa="contact">🛟 Связаться с командой</button></div>
+    <div class="chat ${cur ? 'open' : ''}"><aside class="threads">${list || '<div class="muted pad">Диалогов пока нет. Начните с каталога перевозчиков.</div>'}</aside><section class="pane">${pane}</section></div>`;
+  const ms = $('#msgs'); if (ms) ms.scrollTop = ms.scrollHeight;
+  const ci = $('#chatInput'); if (ci) ci.value = chatUI.draft || '';
+  updateBadges();
+}
+
+function openRequest(preId) {
+  const u = Auth.current();
+  if (!u) { authAfter = () => openRequest(preId); openAuth('login'); return; }
+  const list = directory();
+  const q = buildQuote();
+  const chosen = preId && list.some(p => p.id === preId) ? preId : (list[0] && list[0].id);
+  openModal(`<form class="dlg" id="reqForm"><h2>📨 Запросить расчёт</h2>
+    <p class="muted">Заявка уйдёт в чат вместе с параметрами вашего расчёта.</p>
+    <div class="quote"><b>${esc(q.title)}</b>${q.lines.map(l => `<span>${esc(l)}</span>`).join('')}<div class="q-row"><em>Расчёт: ${esc(money(q.total))}</em><em>~${fmt1(q.days)} дн.</em></div></div>
+    <label class="lbl">Кому</label>
+    <div class="pick">${list.map(p => `<label class="pick-i"><input type="radio" name="to" value="${esc(p.id)}" ${p.id === chosen ? 'checked' : ''}>${avatar(p, 'sm')}<span><b>${esc(p.name)}</b><small>${p.demo ? 'Демо-профиль' : 'На платформе'}${svcText(p) ? ' · ' + esc(svcText(p)) : ''}</small></span></label>`).join('')}</div>
+    <label class="lbl">Сообщение</label><textarea name="text" rows="3" maxlength="600">Здравствуйте! Прошу подтвердить стоимость и сроки по расчёту ниже.</textarea>
+    <div class="err" id="formErr" role="alert"></div>
+    <div class="dlg-actions"><button type="button" class="btn line" data-sa="closemodal">Отмена</button><button type="submit" class="btn solid">Отправить заявку</button></div></form>`);
+}
+
+/* =====================================================================
+   ПОМОЩЬ И ПАЛИТРА КОМАНД
+   ===================================================================== */
+function openContact() {
+  const ch = [];
+  if (mailOk(SUPPORT.email)) ch.push(`<a class="btn line" href="mailto:${esc(SUPPORT.email)}?subject=BridgeLogix">✉️ Написать на email</a>`);
+  if (tgLink(SUPPORT.telegram)) ch.push(`<a class="btn line" href="${esc(tgLink(SUPPORT.telegram))}" target="_blank" rel="noopener noreferrer">✈️ Telegram</a>`);
+  if (waLink(SUPPORT.whatsapp)) ch.push(`<a class="btn line" href="${esc(waLink(SUPPORT.whatsapp))}" target="_blank" rel="noopener noreferrer">💚 WhatsApp</a>`);
+  openModal(`<div class="dlg"><h2>🛟 Связаться с командой</h2>
+    <p class="muted">Вопрос по сервису, ошибка или идея — напишем в ответ.</p>
+    <div class="actions" style="margin:14px 0">${ch.join('') || '<span class="muted">Контакты команды ещё не настроены (см. SUPPORT в platform.js).</span>'}</div>
+    <button class="btn solid wide" data-sa="supportchat">💬 Открыть чат с командой</button>
+    <div class="dlg-actions"><button class="btn line" data-sa="closemodal">Закрыть</button></div></div>`);
+}
+
+function paletteItems() {
+  const u = Auth.current();
+  const tabs = [['calc', '🧮 Калькулятор'], ['compare', '⚖️ Сравнение способов'], ['carriers', '🤝 Перевозчики'], ['chat', '💬 Сообщения'], ['docs', '📄 Документы'], ['track', '📍 Трекер'], ['stats', '📊 Аналитика'], ['cabinet', '👤 Кабинет'], ['tariffs', '⚙️ Тарифы']]
+    .map(([t, n]) => ({ t: 'Перейти: ' + n, run: () => showTab(t, true) }));
+  return [...tabs,
+    { t: '💾 Сохранить расчёт', run: () => socialAction('savecalc') },
+    { t: '📨 Запросить расчёт у перевозчика', run: () => socialAction('request') },
+    { t: '🌓 Сменить тему', run: () => $('#themeBtn').click() },
+    { t: '💱 Сменить валюту ₸/$', run: () => $('#curBtn').click() },
+    { t: '🛟 Связаться с командой', run: openContact },
+    u ? { t: '🚪 Выйти из аккаунта', run: () => handleSA('logout') } : { t: '🔑 Войти / регистрация', run: () => openAuth('login') }];
+}
+function openPalette() {
+  const d = $('#palette'); if (!d) return;
+  pal.items = paletteItems(); pal.idx = 0;
+  const inp = $('#palInput'); inp.value = ''; drawPalette('');
+  if (!d.open) d.showModal(); inp.focus();
+}
+function drawPalette(q) {
+  const k = q.trim().toLowerCase();
+  const list = pal.items.filter(i => !k || i.t.toLowerCase().includes(k));
+  pal.shown = list; pal.idx = Math.min(pal.idx, Math.max(0, list.length - 1));
+  $('#palList').innerHTML = list.map((i, n) => `<li class="${n === pal.idx ? 'on' : ''}" data-sa="palrun" data-i="${n}">${esc(i.t)}</li>`).join('') || '<li class="muted">Ничего не найдено</li>';
+}
+function runPalette(i) { const it = pal.shown && pal.shown[i]; if (!it) return; $('#palette').close(); it.run(); }
+
+/* =====================================================================
+   ДЕЙСТВИЯ
+   ===================================================================== */
+function socialAction(act) {
+  if (act === 'savecalc') {
+    const r = calcShipment(state, S);
+    calcHistory.unshift({ id: uid(), ts: Date.now(), total: Math.round(r.total), days: Math.round(r.expDays * 10) / 10,
+      state: { dir: state.dir, city: state.city, cargo: state.cargo, weight: state.weight, volume: state.volume, value: state.value, mode: state.mode,
+        urgent: state.urgent, docsPrepared: state.docsPrepared, preDecl: state.preDecl, eQueue: state.eQueue, offPeak: state.offPeak, insurance: state.insurance, includeTaxes: state.includeTaxes } });
+    calcHistory = calcHistory.slice(0, 50); ustore.set('history', calcHistory);
+    toast('Расчёт сохранён 💾' + (Auth.current() ? '' : ' · войдите, чтобы видеть его в кабинете'));
+    if (ui.tab === 'cabinet') renderCabinet();
+  } else if (act === 'request') openRequest('');
+}
+
+function handleSA(a, el) {
+  const id = el && el.dataset ? el.dataset.id : '';
+  switch (a) {
+    case 'login': openAuth('login'); break;
+    case 'register': openAuth('register'); break;
+    case 'authmode': openAuth(el.dataset.m); break;
+    case 'closemodal': closeModal(); break;
+    case 'togglepw': { const i = el.parentNode.querySelector('input'); i.type = i.type === 'password' ? 'text' : 'password'; break; }
+    case 'gocab': showTab('cabinet', true); break;
+    case 'logout': Auth.logout(); afterAuthChange(); chatUI.active = null; showTab('calc', true); toast('Вы вышли из аккаунта'); break;
+    case 'editprofile': { const u = Auth.current(); if (u) openModal(profileHTML(u)); break; }
+    case 'chpass': openModal(passHTML()); break;
+    case 'export': exportMyData(); break;
+    case 'deleteacc':
+      if (confirm('Удалить аккаунт и все его данные? Это нельзя отменить.')) { Auth.remove(); chatUI.active = null; afterAuthChange(); showTab('calc', true); toast('Аккаунт удалён'); }
+      break;
+    case 'openhist': { const h = calcHistory.find(x => x.id === id); if (h) { applySnapshot(h.state); updateAll(true); showTab('calc', true); } break; }
+    case 'delhist': calcHistory = calcHistory.filter(x => x.id !== id); ustore.set('history', calcHistory); renderCabinet(); break;
+    case 'chatwith': openThreadWith(id); break;
+    case 'reqto': openRequest(id); break;
+    case 'openthread': chatUI.active = el.dataset.t; chatUI.draft = ''; renderChat(); break;
+    case 'backthread': chatUI.active = null; renderChat(); break;
+    case 'openquote': {
+      const t = Chat.get(el.dataset.t); const m = t && t.msgs.find(x => x.id === el.dataset.m);
+      if (m && m.attach) { applySnapshot(m.attach.state); updateAll(true); showTab('calc', true); toast('Параметры заявки загружены'); }
+      break;
+    }
+    case 'setsvc': dirUI.svc = el.dataset.v; renderCarriers(); break;
+    case 'contact': openContact(); break;
+    case 'supportchat': closeModal(); openThreadWith('demo:team'); break;
+    case 'palrun': runPalette(Number(el.dataset.i)); break;
+    case 'cmd': openPalette(); break;
+    case 'savecalc': socialAction('savecalc'); break;
+    case 'request': socialAction('request'); break;
+    case 'humanpick': {
+      const ok = Human.answer(el.dataset.v); const box = $('#humanBox');
+      if (box) box.innerHTML = humanHTML();
+      if (ok) { const er = $('#authErr'); if (er) er.textContent = ''; } else toast('Неверно, попробуйте ещё раз');
+      break;
+    }
+    default: break;
+  }
+}
+
+/* ---------- запуск ---------- */
+function socialInit() {
+  updateHeader();
+
+  document.addEventListener('click', (e) => {
+    const el = e.target.closest('[data-sa]');
+    if (el) { handleSA(el.dataset.sa, el); return; }
+    if (e.target.tagName === 'DIALOG' && e.target.open) e.target.close();
+    if (e.target.closest('.stepper [data-st="delivered"]')) confetti();
+  });
+
+  document.addEventListener('submit', async (e) => {
+    const f = e.target;
+    if (f.id === 'authForm') { e.preventDefault(); await submitAuth(f); }
+    else if (f.id === 'profileForm') {
+      e.preventDefault();
+      const fd = new FormData(f);
+      const res = Auth.update({
+        name: fd.get('name'), company: fd.get('company'), city: fd.get('city'), phone: fd.get('phone'), telegram: fd.get('telegram'), about: fd.get('about'),
+        services: fd.getAll('svc'), routes: fd.get('routes') || '', price: fd.get('price') || '',
+        listed: f.elements.listed ? f.elements.listed.checked : undefined,
+        publicContacts: f.elements.publicContacts ? f.elements.publicContacts.checked : undefined
+      });
+      if (res.error) { $('#formErr').textContent = res.error; return; }
+      closeModal(); updateHeader(); renderCabinet(); toast('Профиль сохранён ✅');
+    } else if (f.id === 'passForm') {
+      e.preventDefault();
+      const v = (n) => f.elements[n].value;
+      if (v('n1') !== v('n2')) { $('#formErr').textContent = 'Новые пароли не совпадают'; return; }
+      const res = await Auth.changePassword(v('old'), v('n1'));
+      if (res.error) { $('#formErr').textContent = res.error; return; }
+      closeModal(); toast('Пароль изменён 🔐');
+    } else if (f.id === 'reqForm') {
+      e.preventDefault();
+      const to = f.querySelector('input[name=to]:checked');
+      if (!to) { $('#formErr').textContent = 'Выберите получателя'; return; }
+      const res = sendChat(to.value, f.elements.text.value, buildQuote());
+      if (!res) { $('#formErr').textContent = 'Не удалось отправить'; return; }
+      chatUI.active = res.threadId; closeModal(); showTab('chat', true); toast('Заявка отправлена 📨');
+    } else if (f.id === 'chatForm') {
+      e.preventDefault();
+      const inp = $('#chatInput'); const text = inp.value.trim(); if (!text) return;
+      chatUI.draft = ''; sendChat(f.dataset.to, text, null); renderChat();
+    }
+  });
+
+  document.addEventListener('input', (e) => {
+    const t = e.target;
+    if (t.id === 'carrierSearch') { dirUI.q = t.value; $('#carrierList').innerHTML = carrierListHTML(); }
+    else if (t.id === 'chatInput') { chatUI.draft = t.value; t.style.height = 'auto'; t.style.height = Math.min(120, t.scrollHeight) + 'px'; }
+    else if (t.id === 'palInput') { pal.idx = 0; drawPalette(t.value); }
+  });
+
+  document.addEventListener('change', (e) => {
+    const t = e.target;
+    if (t.name === 'role') { const box = document.querySelector('.carrier-only'); if (box) box.hidden = t.value !== 'carrier'; }
+    if (t.dataset && t.dataset.doc) {
+      const ids = docIdsFor(state); const done = docsDone[docKey()] || [];
+      if (ids.length && ids.every(i => done.includes(i))) confetti();
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); openPalette(); return; }
+    if (e.target.id === 'chatInput' && e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); const f = $('#chatForm'); if (f) f.requestSubmit(); }
+    if (e.target.id === 'palInput') {
+      const n = (pal.shown || []).length;
+      if (e.key === 'ArrowDown') { e.preventDefault(); pal.idx = (pal.idx + 1) % Math.max(1, n); drawPalette($('#palInput').value); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); pal.idx = (pal.idx - 1 + Math.max(1, n)) % Math.max(1, n); drawPalette($('#palInput').value); }
+      else if (e.key === 'Enter') { e.preventDefault(); runPalette(pal.idx); }
+    }
+  });
+
+  /* сообщения из другой вкладки приходят в реальном времени */
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'bl_threads') {
+      updateBadges();
+      if (ui.tab === 'chat') renderChat();
+      const u = Auth.current(); if (u && Chat.unread(u.id) > 0 && ui.tab !== 'chat') toast('💬 Новое сообщение');
+    }
+    if (e.key === 'bl_users' || e.key === 'bl_session') { updateHeader(); if (ui.tab === 'carriers') renderCarriers(); }
+  });
+}
+
+socialInit();
+{ const h = (location.hash || '').slice(1); if (TABS.includes(h) && h !== ui.tab) showTab(h, false); }
 
 </script>
 </body>
